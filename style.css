@@ -43,12 +43,6 @@ body {
     color: #555;
 }
 
-.fps-display {
-    font-size: 0.8rem;
-    margin-top: 4px;
-    text-align: right;
-}
-
 /* LAYOUT */
 
 .layout {
@@ -205,26 +199,7 @@ body {
     z-index: 2;
 }
 
-/* PROGRESS BAR */
-
-.progress-bar {
-    width: 100%;
-    height: 6px;
-    background: #e0d7c4;
-    border-radius: 4px;
-    margin-top: 12px;
-    overflow: hidden;
-    position: relative;
-}
-
-.progress-bar-fill {
-    height: 100%;
-    background: #111;
-    width: 0%;
-    transition: width 0.3s ease;
-}
-
-/* PROGRESS CIRCLE */
+/* PROGRESS CIRCLE (COUNTDOWN + STOPWATCH ONLY) */
 
 .progress-circle {
     position: relative;
@@ -294,6 +269,7 @@ body {
     font-size: 0.8rem;
     text-align: left;
 }
+
 /* SETTINGS PANEL */
 
 .settings-panel {
@@ -347,15 +323,11 @@ body {
 
 /* FOCUS MODE */
 
-.focus-mode-active #section-input,
-.focus-mode-active #section-presets,
-.focus-mode-active #section-range,
-.focus-mode-active #section-tools,
-.focus-mode-active .site-footer {
+.focus-mode-active .panel:not(:nth-of-type(3)) {
     display: none;
 }
 
-.focus-mode-active #section-display {
+.focus-mode-active .panel:nth-of-type(3) {
     margin-top: 40px;
 }
 
@@ -447,19 +419,7 @@ body {
     gap: 6px;
 }
 
-/* FLASHING TIMER TOOLS TITLE */
-
-.flash-tools {
-    animation: flashTools 0.75s infinite;
-}
-
-@keyframes flashTools {
-    0% { background: #111; color: #fdfaf3; }
-    50% { background: #fdfaf3; color: #111; }
-    100% { background: #111; color: #fdfaf3; }
-}
-
-/* DARK MODE — FULL BLACK */
+/* DARK MODE */
 
 body.dark-mode {
     background: #000;
@@ -501,14 +461,6 @@ body.dark-mode .btn-primary {
     color: #000;
 }
 
-body.dark-mode .progress-bar {
-    background: #333;
-}
-
-body.dark-mode .progress-bar-fill {
-    background: #e6e6e6;
-}
-
 body.dark-mode .progress-circle {
     border-color: rgba(230,230,230,0.3);
 }
@@ -522,7 +474,8 @@ body.dark-mode .settings-section h4,
 body.dark-mode .settings-option {
     color: #e6e6e6;
 }
-/* HIGH CONTRAST MODE */
+
+/* HIGH CONTRAST */
 
 body.high-contrast {
     background: #fff;
@@ -550,14 +503,6 @@ body.high-contrast .btn {
 body.high-contrast .btn-primary {
     background: #000;
     color: #fff;
-}
-
-body.high-contrast .progress-bar {
-    background: #ccc;
-}
-
-body.high-contrast .progress-bar-fill {
-    background: #000;
 }
 
 body.high-contrast .progress-circle {
@@ -613,7 +558,7 @@ body.extra-spacing .big-timer {
     margin-bottom: 12px;
 }
 
-/* ROUNDED CORNERS MODE */
+/* ROUNDED CORNERS */
 
 body.rounded .panel,
 body.rounded .input,
@@ -633,10 +578,6 @@ body.hover-glow .preset-btn:hover {
 }
 
 /* ANIMATIONS */
-
-body.more-animations .progress-bar-fill {
-    transition: width 0.6s ease;
-}
 
 body.more-animations .tutorial-progress-fill {
     transition: width 0.6s ease;

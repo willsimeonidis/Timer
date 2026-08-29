@@ -301,9 +301,10 @@ function updateStopwatch() {
 
     const progress = (ms % 60000) / 60000;
 
-    swCircle.style.background = `
-        conic-gradient(#111 ${progress * 360}deg, rgba(0,0,0,0.12) 0deg)
-    `;
+   swCircle.style.background = `
+    conic-gradient(#111 ${progress * 360}deg, rgba(0,0,0,0.12) 0deg)
+`;
+
 }
 
 /* LAPS */

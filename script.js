@@ -260,12 +260,9 @@ tutorialFinish.addEventListener("click", () => {
 });
 
 // Any button to proceed from welcome
-document.addEventListener("click", (e) => {
-    if (!tutorialIntroActive) return;
-
-    const isButton = e.target.closest("button");
-    if (!isButton) return;
-
+tutorialWelcome.addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (!btn) return;
     startTutorialSteps();
 });
 

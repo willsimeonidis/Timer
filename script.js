@@ -30,8 +30,6 @@ const settingsPanel = document.getElementById("settings-panel");
 const closeSettingsBtn = document.getElementById("close-settings");
 
 const focusModeBtn = document.getElementById("focus-mode-btn");
-const timerToolsBtn = document.getElementById("timer-tools-btn");
-const sectionTools = document.getElementById("section-tools");
 
 const cdDays = document.getElementById("cd-days");
 const cdHours = document.getElementById("cd-hours");
@@ -58,7 +56,7 @@ const swLaps = document.getElementById("sw-laps");
 
 const openTutorialBtn = document.getElementById("open-tutorial");
 const tutorialOverlay = document.getElementById("tutorial-overlay");
-const tutorialSteps = document.getElementById("tutorial-steps");
+const tutorialStepsEl = document.getElementById("tutorial-steps");
 const tutorialHighlight = document.getElementById("tutorial-highlight");
 const tutorialText = document.getElementById("tutorial-text");
 const tutorialPrev = document.getElementById("tutorial-prev");
@@ -129,7 +127,6 @@ let swRunning = false;
 
 let tutorialIndex = 0;
 let tutorialRunning = false;
-let tutorialFirstRun = true;
 
 let fpsLastTime = performance.now();
 let fpsFrames = 0;
@@ -342,7 +339,7 @@ copyBtn.addEventListener("click", async () => {
     }
 });
 
-// PRESETS (DENISON / BATHURST)
+// PRESETS
 presetButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
         const preset = btn.dataset.preset;
@@ -529,17 +526,6 @@ function formatDuration(ms) {
     return parts.join(" ");
 }
 
-// TIMER TOOLS PANEL
-timerToolsBtn.addEventListener("click", () => {
-    const isHidden = sectionTools.style.display === "none" || sectionTools.style.display === "";
-    if (isHidden) {
-        sectionTools.style.display = "block";
-        timerToolsBtn.classList.remove("flash-tools");
-    } else {
-        sectionTools.style.display = "none";
-    }
-});
-
 // COUNTDOWN
 cdStartBtn.addEventListener("click", () => {
     const days = Number(cdDays.value) || 0;
@@ -554,6 +540,8 @@ cdStartBtn.addEventListener("click", () => {
         clearInterval(cdInterval);
         cdInterval = null;
     }
+    const toolsTitle = document.getElementById("timer-tools-title");
+    toolsTitle.classList.remove("flash-tools");
     updateCountdown();
     cdInterval = setInterval(updateCountdown, 1000);
 });
@@ -574,6 +562,8 @@ cdResetBtn.addEventListener("click", () => {
     cdRemainingMs = 0;
     cdDisplay.textContent = "--";
     cdBarFill.style.width = "0%";
+    const toolsTitle = document.getElementById("timer-tools-title");
+    toolsTitle.classList.remove("flash-tools");
 });
 
 function updateCountdown() {
@@ -584,7 +574,8 @@ function updateCountdown() {
         clearInterval(cdInterval);
         cdInterval = null;
         if (setCdFlash.checked) {
-            timerToolsBtn.classList.add("flash-tools");
+            const toolsTitle = document.getElementById("timer-tools-title");
+            toolsTitle.classList.add("flash-tools");
         }
         return;
     }
@@ -773,19 +764,22 @@ function toggleClass(el, cls, on) {
     else el.classList.remove(cls);
 }
 
-// SETTINGS CHANGE LISTENERS
+// SETTINGS CHANGE LISTENERS (always save)
 [
     setMainBar, setMainCircle, setMainCircleSize, setMainBarThickness,
     setMainFontSize, setMainFontFamily,
-    setCdBar, setCdCircle, setCdCircleSize, setCdBarThickness,
-    setSwBar, setSwCircle, setSwCircleSize, setSwBarThickness,
+    setCdBar, setCdCircle, setCdCircleSize, setCdBarThickness, setCdFlash,
+    setSwBar, setSwCircle, setSwCircleSize, setSwBarThickness, setSwMs, setSwLaps,
     setRangeBar, setRangeCircle, setRangeCircleSize, setRangeBarThickness,
+    setRangePercent, setRangeRemaining, setRangeElapsed,
+    setTutSpotlight, setTutGlow,
     setDarkMode, setHighContrast, setMoreAnimations, setHoverGlow,
-    setRounded, setExtraSpacing, setCompact
+    setRounded, setExtraSpacing, setCompact,
+    setAutoSave, setFps
 ].forEach(el => {
     el.addEventListener("change", () => {
         applySettings();
-        if (setAutoSave.checked) saveSettings();
+        saveSettings();
     });
 });
 
@@ -888,9 +882,9 @@ function updateFps() {
     fpsFrames++;
     const diff = now - fpsLastTime;
     if (diff >= 1000) {
-        const fps = Math.round((fpsFrames / diff) * 1000);
+        const fps = (fpsFrames / diff) * 1000;
         if (setFps.checked) {
-            fpsDisplay.textContent = `FPS: ${fps}`;
+            fpsDisplay.textContent = `FPS: ${fps.toFixed(1)}`;
         } else {
             fpsDisplay.textContent = "FPS: --";
         }
@@ -927,7 +921,7 @@ tutorialNext.addEventListener("click", () => {
 tutorialFinish.addEventListener("click", () => {
     tutorialOverlay.classList.add("hidden");
     tutorialRunning = false;
-    tutorialFirstRun = false;
+    document.body.style.overflow = "";
 });
 
 function showTutorialStep() {
@@ -937,10 +931,10 @@ function showTutorialStep() {
 
     const rect = targetEl.getBoundingClientRect();
 
-    tutorialHighlight.style.left = `${rect.left + window.scrollX - 6}px`;
-    tutorialHighlight.style.top = `${rect.top + window.scrollY - 6}px`;
-    tutorialHighlight.style.width = `${rect.width + 12}px`;
-    tutorialHighlight.style.height = `${rect.height + 12}px`;
+    tutorialHighlight.style.left = `${rect.left}px`;
+    tutorialHighlight.style.top = `${rect.top + window.scrollY}px`;
+    tutorialHighlight.style.width = `${rect.width}px`;
+    tutorialHighlight.style.height = `${rect.height}px`;
 
     tutorialText.textContent = step.text;
 
@@ -953,11 +947,7 @@ function showTutorialStep() {
         tutorialHighlight.style.boxShadow = "none";
     }
 
-    if (setTutSpotlight.checked) {
-        document.body.style.overflow = "hidden";
-    } else {
-        document.body.style.overflow = "";
-    }
+    document.body.style.overflow = "";
 
     window.scrollTo({
         top: rect.top + window.scrollY - 80,
@@ -965,10 +955,24 @@ function showTutorialStep() {
     });
 }
 
+// COLLAPSIBLE PANELS
+document.querySelectorAll(".panel-title.collapsible").forEach(title => {
+    title.addEventListener("click", () => {
+        const targetId = title.dataset.target;
+        const body = document.getElementById(targetId);
+        if (!body) return;
+        const isHidden = body.style.display === "none";
+        body.style.display = isHidden ? "block" : "none";
+    });
+});
+
 // INIT
 window.addEventListener("load", () => {
-    sectionTools.style.display = "none";
     loadSettings();
     applySettings();
+    document.querySelectorAll(".panel-title.collapsible").forEach(title => {
+        const body = document.getElementById(title.dataset.target);
+        if (body) body.style.display = "block";
+    });
     requestAnimationFrame(updateFps);
 });

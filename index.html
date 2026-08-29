@@ -10,39 +10,15 @@
     <header class="site-header">
         <div class="masthead">
             <h1 class="site-title">TIMER</h1>
-            <p class="site-tagline">Clean time calculator · Count up & count down</p>
+            <p class="site-tagline">Clean time calculator · Count up & count down · 8H-News style</p>
         </div>
     </header>
 
     <main class="layout">
-        <section class="panel panel-top">
-            <div class="panel-header">
-                <h2 class="panel-title">Quick presets</h2>
-            </div>
-            <div class="preset-row">
-                <div class="preset-group">
-                    <label for="preset-type" class="label">Event</label>
-                    <select id="preset-type" class="select">
-                        <option value="">Choose an event…</option>
-                        <option value="christmas">Christmas</option>
-                        <option value="newyear">New Year</option>
-                        <option value="schoolend">School Ends</option>
-                        <option value="custom">Custom important day</option>
-                    </select>
-                </div>
-                <div class="preset-group">
-                    <label for="preset-year" class="label">Year</label>
-                    <select id="preset-year" class="select">
-                        <!-- Filled by JS -->
-                    </select>
-                </div>
-                <button id="apply-preset" class="btn">Set preset</button>
-            </div>
-        </section>
-
-        <section class="panel panel-middle">
+        <section class="panel panel-middle" id="section-input">
             <div class="panel-header">
                 <h2 class="panel-title">Choose any date & time</h2>
+                <button id="open-tutorial" class="btn btn-small">Show tutorial</button>
             </div>
             <div class="input-row">
                 <div class="input-group">
@@ -52,35 +28,59 @@
                 <div class="input-group">
                     <label for="display-mode" class="label">Display as</label>
                     <select id="display-mode" class="select">
-                        <option value="normal">Normal (1 year 57 days 4 hours…)</option>
-                        <option value="seconds">How many seconds</option>
-                        <option value="minutes">How many minutes</option>
-                        <option value="hours">How many hours</option>
-                        <option value="days">How many days</option>
-                        <option value="months">How many months (approx)</option>
+                        <option value="normal">Normal</option>
+                        <option value="seconds">Seconds</option>
+                        <option value="minutes">Minutes</option>
+                        <option value="hours">Hours</option>
+                        <option value="days">Days</option>
+                        <option value="months">Months (approx)</option>
                     </select>
                 </div>
                 <button id="start-timer" class="btn btn-primary">Show time</button>
             </div>
         </section>
 
-        <section class="panel panel-display">
+        <section class="panel panel-display" id="section-display">
             <div class="panel-header">
                 <h2 class="panel-title">Time between now and your date</h2>
             </div>
             <div class="display-wrapper">
                 <p id="direction-label" class="direction-label">Waiting for a date…</p>
-                <div id="big-timer" class="big-timer">--</div>
+                <div class="timer-row">
+                    <button id="copy-timer" class="btn btn-copy">Copy</button>
+                    <div id="big-timer" class="big-timer">--</div>
+                </div>
                 <p id="extra-message" class="extra-message"></p>
             </div>
         </section>
     </main>
 
-    <div id="confetti-container" class="confetti-container"></div>
-
     <footer class="site-footer">
-        <p class="footer-text">Timer · Built in the spirit of 8H-News · Light, clean.</p>
+        <p class="footer-text">Timer · Built in the spirit of 8H-News · Light, clean, phone-friendly.</p>
     </footer>
+
+    <!-- Tutorial overlay -->
+    <div id="tutorial-overlay" class="tutorial-overlay hidden">
+        <div class="tutorial-backdrop"></div>
+
+        <div id="tutorial-welcome" class="tutorial-center">
+            <div class="tutorial-welcome-text">Welcome</div>
+            <div class="tutorial-subtext">Tap any button to proceed</div>
+            <button id="tutorial-skip" class="btn btn-small tutorial-skip">Skip tutorial</button>
+        </div>
+
+        <div id="tutorial-steps" class="tutorial-steps hidden">
+            <div id="tutorial-highlight" class="tutorial-highlight"></div>
+            <div class="tutorial-info">
+                <div id="tutorial-text" class="tutorial-text"></div>
+                <div class="tutorial-controls">
+                    <button id="tutorial-prev" class="btn btn-small">Previous</button>
+                    <button id="tutorial-next" class="btn btn-small">Next</button>
+                    <button id="tutorial-finish" class="btn btn-small btn-primary">Finish tutorial</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>

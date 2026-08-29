@@ -215,13 +215,6 @@ function buildCompactText(days, hours, minutes, seconds) {
     return parts.join(" ");
 }
 
-function triggerTimerFade() {
-    bigTimerEl.style.animation = "none";
-    // force reflow
-    void bigTimerEl.offsetWidth;
-    bigTimerEl.style.animation = "fadeInTimer 0.4s ease forwards";
-}
-
 // --------------------------------------------------
 // PROGRESS BAR / CIRCLE
 // --------------------------------------------------

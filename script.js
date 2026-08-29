@@ -209,10 +209,11 @@ cdReset.addEventListener("click", () => {
     cdRunning = false;
     cdRemaining = 0;
     cdDisplay.textContent = "--";
-  cdCircle.style.background = `
-    conic-gradient(#111 ${progress * 360}deg, rgba(0,0,0,0.12) 0deg)
-`;
 
+    // Reset circle to empty ring
+    cdCircle.style.background = `
+        conic-gradient(rgba(0,0,0,0.12) 0deg, rgba(0,0,0,0.12) 360deg)
+    `;
 });
 
 function updateCountdown() {
@@ -233,9 +234,10 @@ function updateCountdown() {
 
     const progress = 1 - cdRemaining / cdTotal;
 
-    cdCircle.style.background = `
-        conic-gradient(#111 ${progress * 360}deg, rgba(0,0,0,0.12) 0deg)
-    `;
+   cdCircle.style.background = `
+    conic-gradient(#111 ${progress * 360}deg, rgba(0,0,0,0.12) ${progress * 360}deg)
+`;
+
 }
 
 /* -----------------------------------------------------------

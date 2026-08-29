@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Timer</title>
+    <title>Timer Lab</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -10,8 +10,8 @@
 
 <header class="site-header">
     <div class="masthead">
-        <h1 class="site-title">TIMER</h1>
-        <p class="site-tagline">Bathurst · Denison College · Clean Time Tools</p>
+        <h1 class="site-title">TIMER LAB</h1>
+        <p class="site-tagline">Bathurst · Denison College · Time Tools</p>
     </div>
 </header>
 
@@ -20,17 +20,17 @@
     <!-- SECTION 1 — INPUT -->
     <section class="panel" id="section-input">
         <div class="panel-header">
-            <h2 class="panel-title">Choose any date & time</h2>
+            <h2 class="panel-title">Main timer input</h2>
 
             <div class="top-buttons">
                 <button id="settings-btn" class="btn btn-small">Settings</button>
                 <button id="open-tutorial" class="btn btn-small">Show tutorial</button>
+                <button id="timer-tools-btn" class="btn btn-small">Timer tools</button>
                 <button id="start-timer" class="btn btn-primary">Show time</button>
             </div>
         </div>
 
         <div class="input-row">
-
             <div class="input-group">
                 <label class="label">Target date & time</label>
                 <input type="datetime-local" id="target-datetime" class="input">
@@ -52,10 +52,10 @@
         </div>
     </section>
 
-    <!-- SECTION 2 — TIMER DISPLAY -->
+    <!-- SECTION 2 — MAIN TIMER DISPLAY -->
     <section class="panel" id="section-display">
         <div class="panel-header">
-            <h2 class="panel-title">Timer</h2>
+            <h2 class="panel-title">Main timer</h2>
             <button id="focus-mode-btn" class="btn btn-small">Focus mode</button>
         </div>
 
@@ -67,45 +67,146 @@
                 <div id="big-timer" class="big-timer">--</div>
             </div>
 
-            <div id="progress-bar" class="progress-bar"></div>
+            <div id="main-progress-bar" class="progress-bar">
+                <div class="progress-bar-fill" id="main-progress-fill"></div>
+            </div>
+
+            <div id="main-progress-circle" class="progress-circle"></div>
 
             <p id="extra-message" class="extra-message"></p>
         </div>
     </section>
 
-    <!-- SECTION 3 — SMART PRESETS -->
+    <!-- SECTION 3 — TWO-TIME PROGRESS -->
+    <section class="panel" id="section-range">
+        <div class="panel-header">
+            <h2 class="panel-title">Two-time progress</h2>
+        </div>
+
+        <div class="input-row">
+            <div class="input-group">
+                <label class="label">Start time</label>
+                <input type="datetime-local" id="range-start" class="input">
+            </div>
+            <div class="input-group">
+                <label class="label">End time</label>
+                <input type="datetime-local" id="range-end" class="input">
+            </div>
+            <button id="range-activate" class="btn btn-small">Activate range</button>
+        </div>
+
+        <div class="display-wrapper">
+            <p id="range-label" class="direction-label">Range not active.</p>
+
+            <div class="timer-row">
+                <div id="range-timer" class="big-timer">--</div>
+            </div>
+
+            <div id="range-progress-bar" class="progress-bar">
+                <div class="progress-bar-fill" id="range-progress-fill"></div>
+            </div>
+
+            <div id="range-progress-circle" class="progress-circle"></div>
+
+            <p id="range-extra" class="extra-message"></p>
+        </div>
+    </section>
+
+    <!-- SECTION 4 — SMART PRESETS -->
     <section class="panel" id="section-presets">
         <div class="panel-header">
             <h2 class="panel-title">Smart presets</h2>
         </div>
 
         <div class="preset-list">
-
             <button class="preset-btn" data-preset="midnight">Time until midnight</button>
+            <button class="preset-btn" data-preset="next-school-day">Time until next school day (Denison)</button>
+            <button class="preset-btn" data-preset="end-school-day">Time until end of school day (3:20pm)</button>
+            <button class="preset-btn" data-preset="end-week">Time until end of week (Friday 3:20pm)</button>
+            <button class="preset-btn" data-preset="end-weekend">Time until end of weekend (Sunday night)</button>
+            <button class="preset-btn" data-preset="christmas">Time until Christmas</button>
+            <button class="preset-btn" data-preset="natural">Natural language shortcuts</button>
+        </div>
+    </section>
 
-            <button class="preset-btn" data-preset="next-school-day">
-                Time until next school day (Denison)
-            </button>
+    <!-- SECTION 5 — TIMER TOOLS (COUNTDOWN + STOPWATCH) -->
+    <section class="panel" id="section-tools">
+        <div class="panel-header">
+            <h2 class="panel-title">Timer tools</h2>
+        </div>
 
-            <button class="preset-btn" data-preset="end-school-day">
-                Time until end of school day (3:20pm)
-            </button>
+        <div class="tools-grid">
 
-            <button class="preset-btn" data-preset="end-week">
-                Time until end of week (Friday 3:20pm)
-            </button>
+            <!-- COUNTDOWN -->
+            <div class="tools-column">
+                <h3 class="tools-title">Countdown</h3>
 
-            <button class="preset-btn" data-preset="end-weekend">
-                Time until end of weekend (Sunday night)
-            </button>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label class="label">Days</label>
+                        <input type="number" id="cd-days" class="input" min="0" value="0">
+                    </div>
+                    <div class="input-group">
+                        <label class="label">Hours</label>
+                        <input type="number" id="cd-hours" class="input" min="0" value="0">
+                    </div>
+                    <div class="input-group">
+                        <label class="label">Minutes</label>
+                        <input type="number" id="cd-minutes" class="input" min="0" value="0">
+                    </div>
+                    <div class="input-group">
+                        <label class="label">Seconds</label>
+                        <input type="number" id="cd-seconds" class="input" min="0" value="0">
+                    </div>
+                </div>
 
-            <button class="preset-btn" data-preset="christmas">
-                Time until Christmas
-            </button>
+                <div class="tools-buttons">
+                    <button id="cd-start" class="btn btn-small">Start</button>
+                    <button id="cd-pause" class="btn btn-small">Pause</button>
+                    <button id="cd-reset" class="btn btn-small">Reset</button>
+                </div>
 
-            <button class="preset-btn" data-preset="natural">
-                Natural language shortcuts
-            </button>
+                <div class="display-wrapper">
+                    <div id="cd-display" class="big-timer">--</div>
+
+                    <div id="cd-progress-bar" class="progress-bar">
+                        <div class="progress-bar-fill" id="cd-progress-fill"></div>
+                    </div>
+
+                    <div id="cd-progress-circle" class="progress-circle"></div>
+                </div>
+            </div>
+
+            <!-- STOPWATCH -->
+            <div class="tools-column">
+                <h3 class="tools-title">Stopwatch</h3>
+
+                <div class="tools-buttons">
+                    <button id="sw-start" class="btn btn-small">Start</button>
+                    <button id="sw-pause" class="btn btn-small">Pause</button>
+                    <button id="sw-reset" class="btn btn-small">Reset</button>
+                </div>
+
+                <div class="input-row">
+                    <div class="input-group">
+                        <label class="label">Add seconds</label>
+                        <input type="number" id="sw-add-seconds" class="input" min="0" value="0">
+                    </div>
+                    <button id="sw-add-btn" class="btn btn-small">Add time</button>
+                </div>
+
+                <div class="display-wrapper">
+                    <div id="sw-display" class="big-timer">--</div>
+
+                    <div id="sw-progress-bar" class="progress-bar">
+                        <div class="progress-bar-fill" id="sw-progress-fill"></div>
+                    </div>
+
+                    <div id="sw-progress-circle" class="progress-circle"></div>
+
+                    <div id="sw-laps" class="laps-list"></div>
+                </div>
+            </div>
 
         </div>
     </section>
@@ -113,7 +214,7 @@
 </main>
 
 <footer class="site-footer">
-    <p class="footer-text">Timer · Built for Bathurst NSW · Denison College</p>
+    <p class="footer-text">Timer Lab · Built for Bathurst NSW · Denison College</p>
 </footer>
 
 <!-- SETTINGS PANEL -->
@@ -121,15 +222,214 @@
     <div class="settings-inner">
         <h3 class="settings-title">Settings</h3>
 
-        <label class="settings-option">
-            <input type="checkbox" id="toggle-progress-bar">
-            Show progress bar
-        </label>
+        <div class="settings-section">
+            <h4>Main timer</h4>
+            <label class="settings-option">
+                <input type="checkbox" id="set-main-bar" checked>
+                Show main progress bar
+            </label>
+            <label class="settings-option">
+                <input type="checkbox" id="set-main-circle">
+                Show main progress circle
+            </label>
+            <label class="settings-option">
+                Circle size
+                <select id="set-main-circle-size">
+                    <option value="small">Small</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="large">Large</option>
+                </select>
+            </label>
+            <label class="settings-option">
+                Bar thickness
+                <select id="set-main-bar-thickness">
+                    <option value="thin">Thin</option>
+                    <option value="normal" selected>Normal</option>
+                    <option value="thick">Thick</option>
+                </select>
+            </label>
+            <label class="settings-option">
+                Timer font size
+                <select id="set-main-font-size">
+                    <option value="small">Small</option>
+                    <option value="normal" selected>Normal</option>
+                    <option value="large">Large</option>
+                </select>
+            </label>
+            <label class="settings-option">
+                Timer font family
+                <select id="set-main-font-family">
+                    <option value="classic" selected>Classic</option>
+                    <option value="digital">Digital</option>
+                    <option value="modern">Modern</option>
+                </select>
+            </label>
+        </div>
 
-        <label class="settings-option">
-            <input type="checkbox" id="toggle-progress-circle">
-            Show progress circle
-        </label>
+        <div class="settings-section">
+            <h4>Countdown</h4>
+            <label class="settings-option">
+                <input type="checkbox" id="set-cd-bar" checked>
+                Show countdown progress bar
+            </label>
+            <label class="settings-option">
+                <input type="checkbox" id="set-cd-circle">
+                Show countdown progress circle
+            </label>
+            <label class="settings-option">
+                Circle size
+                <select id="set-cd-circle-size">
+                    <option value="small">Small</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="large">Large</option>
+                </select>
+            </label>
+            <label class="settings-option">
+                Bar thickness
+                <select id="set-cd-bar-thickness">
+                    <option value="thin">Thin</option>
+                    <option value="normal" selected>Normal</option>
+                    <option value="thick">Thick</option>
+                </select>
+            </label>
+            <label class="settings-option">
+                <input type="checkbox" id="set-cd-flash" checked>
+                Flash Timer Tools button when countdown finishes
+            </label>
+        </div>
+
+        <div class="settings-section">
+            <h4>Stopwatch</h4>
+            <label class="settings-option">
+                <input type="checkbox" id="set-sw-bar" checked>
+                Show stopwatch progress bar
+            </label>
+            <label class="settings-option">
+                <input type="checkbox" id="set-sw-circle">
+                Show stopwatch progress circle
+            </label>
+            <label class="settings-option">
+                Circle size
+                <select id="set-sw-circle-size">
+                    <option value="small">Small</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="large">Large</option>
+                </select>
+            </label>
+            <label class="settings-option">
+                Bar thickness
+                <select id="set-sw-bar-thickness">
+                    <option value="thin">Thin</option>
+                    <option value="normal" selected>Normal</option>
+                    <option value="thick">Thick</option>
+                </select>
+            </label>
+            <label class="settings-option">
+                <input type="checkbox" id="set-sw-ms">
+                Show milliseconds
+            </label>
+            <label class="settings-option">
+                <input type="checkbox" id="set-sw-laps">
+                Show lap list
+            </label>
+        </div>
+
+        <div class="settings-section">
+            <h4>Two-time mode</h4>
+            <label class="settings-option">
+                <input type="checkbox" id="set-range-bar" checked>
+                Show range progress bar
+            </label>
+            <label class="settings-option">
+                <input type="checkbox" id="set-range-circle">
+                Show range progress circle
+            </label>
+            <label class="settings-option">
+                Circle size
+                <select id="set-range-circle-size">
+                    <option value="small">Small</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="large">Large</option>
+                </select>
+            </label>
+            <label class="settings-option">
+                Bar thickness
+                <select id="set-range-bar-thickness">
+                    <option value="thin">Thin</option>
+                    <option value="normal" selected>Normal</option>
+                    <option value="thick">Thick</option>
+                </select>
+            </label>
+            <label class="settings-option">
+                <input type="checkbox" id="set-range-percent" checked>
+                Show percent complete
+            </label>
+            <label class="settings-option">
+                <input type="checkbox" id="set-range-remaining" checked>
+                Show time remaining
+            </label>
+            <label class="settings-option">
+                <input type="checkbox" id="set-range-elapsed" checked>
+                Show time elapsed
+            </label>
+        </div>
+
+        <div class="settings-section">
+            <h4>Tutorial</h4>
+            <label class="settings-option">
+                <input type="checkbox" id="set-tut-spotlight" checked>
+                Spotlight mode (dim everything except highlight)
+            </label>
+            <label class="settings-option">
+                <input type="checkbox" id="set-tut-glow" checked>
+                Highlight glow
+            </label>
+        </div>
+
+        <div class="settings-section">
+            <h4>Visual / UI</h4>
+            <label class="settings-option">
+                <input type="checkbox" id="set-dark-mode">
+                Dark mode
+            </label>
+            <label class="settings-option">
+                <input type="checkbox" id="set-high-contrast">
+                High contrast mode
+            </label>
+            <label class="settings-option">
+                <input type="checkbox" id="set-more-animations">
+                Increase animations
+            </label>
+            <label class="settings-option">
+                <input type="checkbox" id="set-hover-glow">
+                Button hover glow
+            </label>
+            <label class="settings-option">
+                <input type="checkbox" id="set-rounded">
+                Rounded corners
+            </label>
+            <label class="settings-option">
+                <input type="checkbox" id="set-extra-spacing">
+                Extra spacing mode
+            </label>
+            <label class="settings-option">
+                <input type="checkbox" id="set-compact">
+                Compact mode
+            </label>
+        </div>
+
+        <div class="settings-section">
+            <h4>Advanced</h4>
+            <label class="settings-option">
+                <input type="checkbox" id="set-auto-save">
+                Auto-save settings
+            </label>
+            <label class="settings-option">
+                <input type="checkbox" id="set-fps">
+                Show FPS counter
+            </label>
+            <div id="fps-display" class="fps-display">FPS: --</div>
+        </div>
 
         <button id="close-settings" class="btn btn-small">Close</button>
     </div>
@@ -139,21 +439,15 @@
 <div id="tutorial-overlay" class="tutorial-overlay hidden">
     <div class="tutorial-backdrop"></div>
 
-    <!-- WELCOME -->
-    <div id="tutorial-welcome" class="tutorial-center">
-        <div class="tutorial-welcome-text">Welcome</div>
-        <div id="tutorial-proceed" class="tutorial-subtext">Tap here to proceed</div>
-        <button id="tutorial-skip" class="btn btn-small tutorial-skip">Skip tutorial</button>
-    </div>
-
-    <!-- STEPS -->
-    <div id="tutorial-steps" class="tutorial-steps hidden">
+    <div id="tutorial-steps" class="tutorial-steps">
         <div id="tutorial-highlight" class="tutorial-highlight"></div>
 
         <div class="tutorial-info">
             <div id="tutorial-text" class="tutorial-text"></div>
 
-            <div class="tutorial-progress-bar" id="tutorial-progress-bar"></div>
+            <div class="tutorial-progress-bar" id="tutorial-progress-bar">
+                <div class="tutorial-progress-fill"></div>
+            </div>
 
             <div class="tutorial-controls">
                 <button id="tutorial-prev" class="btn btn-small">Previous</button>

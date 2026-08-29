@@ -204,11 +204,21 @@ body {
 .progress-circle {
     position: relative;
     margin: 12px auto 0;
-    width: 220px;
-    height: 220px;
+    width: 200px;
+    height: 200px;
     border-radius: 50%;
-    border: 12px solid rgba(0,0,0,0.12);
-    pointer-events: none;
+    background: conic-gradient(rgba(0,0,0,0.12) 0deg, rgba(0,0,0,0.12) 360deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.progress-circle::after {
+    content: "";
+    width: 160px;
+    height: 160px;
+    background: #fffdf7;
+    border-radius: 50%;
 }
 
 /* PRESETS */

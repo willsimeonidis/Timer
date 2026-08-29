@@ -1,232 +1,5 @@
 /* -----------------------------------------------------------
-   GLOBALS
------------------------------------------------------------ */
-
-let tutorialRunning = false;
-let tutorialIndex = 0;
-
-const tutorialOverlay = document.getElementById("tutorial-overlay");
-const tutorialHighlight = document.getElementById("tutorial-highlight");
-const tutorialText = document.getElementById("tutorial-text");
-const tutorialProgressFill = document.querySelector(".tutorial-progress-fill");
-
-const openTutorialBtn = document.getElementById("open-tutorial");
-const tutorialPrev = document.getElementById("tutorial-prev");
-const tutorialNext = document.getElementById("tutorial-next");
-const tutorialFinish = document.getElementById("tutorial-finish");
-
-const settingsBtn = document.getElementById("settings-btn");
-const settingsPanel = document.getElementById("settings-panel");
-const closeSettings = document.getElementById("close-settings");
-
-const setTutGlow = document.getElementById("set-tut-glow");
-const setTutSpotlight = document.getElementById("set-tut-spotlight");
-
-const setDarkMode = document.getElementById("set-dark-mode");
-const setHighContrast = document.getElementById("set-high-contrast");
-const setMoreAnimations = document.getElementById("set-more-animations");
-const setHoverGlow = document.getElementById("set-hover-glow");
-const setRounded = document.getElementById("set-rounded");
-const setExtraSpacing = document.getElementById("set-extra-spacing");
-const setCompact = document.getElementById("set-compact");
-
-const setFPS = document.getElementById("set-fps");
-const fpsDisplay = document.getElementById("fps-display");
-
-let lastFrameTime = performance.now();
-let fpsEnabled = false;
-
-/* -----------------------------------------------------------
-   TUTORIAL STEPS
------------------------------------------------------------ */
-
-const tutorialStepsData = [
-    {
-        selector: "#section-input",
-        text: "This is where you choose your target date and time."
-    },
-    {
-        selector: "#section-display",
-        text: "This is the main timer display. It shows time until your target."
-    },
-    {
-        selector: "#section-range",
-        text: "Two-time mode lets you track progress between two dates."
-    },
-    {
-        selector: "#section-presets",
-        text: "Smart presets give you quick shortcuts for common times."
-    },
-    {
-        selector: "#section-tools",
-        text: "Timer Tools include a countdown and stopwatch that run alongside the main timer."
-    }
-];
-
-/* -----------------------------------------------------------
-   TUTORIAL CENTER SCROLL + HIGHLIGHT
------------------------------------------------------------ */
-
-function showTutorialStep() {
-    const step = tutorialStepsData[tutorialIndex];
-    const targetEl = document.querySelector(step.selector);
-    if (!targetEl) return;
-
-    const rect = targetEl.getBoundingClientRect();
-
-    // Highlight EXACT element
-    tutorialHighlight.style.left = `${rect.left + window.scrollX}px`;
-    tutorialHighlight.style.top = `${rect.top + window.scrollY}px`;
-    tutorialHighlight.style.width = `${rect.width}px`;
-    tutorialHighlight.style.height = `${rect.height}px`;
-
-    tutorialText.textContent = step.text;
-
-    const percent = ((tutorialIndex + 1) / tutorialStepsData.length) * 100;
-    tutorialProgressFill.style.width = `${percent}%`;
-
-    tutorialHighlight.style.boxShadow = setTutGlow.checked
-        ? "0 0 16px rgba(255,255,255,0.8)"
-        : "none";
-
-    // Spotlight mode
-    tutorialOverlay.querySelector(".tutorial-backdrop").style.background =
-        setTutSpotlight.checked ? "rgba(0,0,0,0.85)" : "rgba(0,0,0,0.55)";
-
-    // CENTER SCROLL
-    const centerY = rect.top + window.scrollY - (window.innerHeight / 2) + (rect.height / 2);
-
-    window.scrollTo({
-        top: centerY,
-        behavior: "smooth"
-    });
-}
-
-/* -----------------------------------------------------------
-   TUTORIAL START / END
------------------------------------------------------------ */
-
-openTutorialBtn.addEventListener("click", () => {
-    tutorialOverlay.classList.remove("hidden");
-    tutorialRunning = true;
-    tutorialIndex = 0;
-
-    // Lock scrolling
-    document.body.style.overflow = "hidden";
-
-    showTutorialStep();
-});
-
-tutorialNext.addEventListener("click", () => {
-    if (!tutorialRunning) return;
-    if (tutorialIndex < tutorialStepsData.length - 1) {
-        tutorialIndex++;
-        showTutorialStep();
-    }
-});
-
-tutorialPrev.addEventListener("click", () => {
-    if (!tutorialRunning) return;
-    if (tutorialIndex > 0) {
-        tutorialIndex--;
-        showTutorialStep();
-    }
-});
-
-tutorialFinish.addEventListener("click", () => {
-    tutorialOverlay.classList.add("hidden");
-    tutorialRunning = false;
-
-    // Restore scrolling
-    document.body.style.overflow = "";
-});
-
-/* Prevent scroll wheel from moving page */
-tutorialOverlay.addEventListener("wheel", (e) => {
-    if (tutorialRunning) e.preventDefault();
-}, { passive: false });
-
-/* -----------------------------------------------------------
-   SETTINGS PANEL TOGGLE
------------------------------------------------------------ */
-
-settingsBtn.addEventListener("click", () => {
-    settingsPanel.classList.toggle("hidden");
-});
-
-closeSettings.addEventListener("click", () => {
-    settingsPanel.classList.add("hidden");
-});
-
-document.querySelectorAll(".preset-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-        const preset = btn.dataset.preset;
-        applyPreset(preset);
-    });
-});
-
-/* -----------------------------------------------------------
-   UI MODES
------------------------------------------------------------ */
-
-setDarkMode.addEventListener("change", () => {
-    document.body.classList.toggle("dark-mode", setDarkMode.checked);
-});
-
-setHighContrast.addEventListener("change", () => {
-    document.body.classList.toggle("high-contrast", setHighContrast.checked);
-});
-
-setMoreAnimations.addEventListener("change", () => {
-    document.body.classList.toggle("more-animations", setMoreAnimations.checked);
-});
-
-setHoverGlow.addEventListener("change", () => {
-    document.body.classList.toggle("hover-glow", setHoverGlow.checked);
-});
-
-setRounded.addEventListener("change", () => {
-    document.body.classList.toggle("rounded", setRounded.checked);
-});
-
-setExtraSpacing.addEventListener("change", () => {
-    document.body.classList.toggle("extra-spacing", setExtraSpacing.checked);
-});
-
-setCompact.addEventListener("change", () => {
-    document.body.classList.toggle("compact", setCompact.checked);
-});
-
-/* -----------------------------------------------------------
-   FPS COUNTER
------------------------------------------------------------ */
-
-function updateFPS() {
-    const now = performance.now();
-    const delta = now - lastFrameTime;
-    lastFrameTime = now;
-
-    const fps = Math.round(1000 / delta);
-
-    if (fpsEnabled) {
-        fpsDisplay.textContent = `FPS: ${fps}`;
-    }
-
-    requestAnimationFrame(updateFPS);
-}
-
-setFPS.addEventListener("change", () => {
-    fpsEnabled = setFPS.checked;
-    fpsDisplay.style.display = fpsEnabled ? "block" : "none";
-});
-
-updateFPS();
-
-/* -----------------------------------------------------------
-   MAIN TIMER LOGIC (STARTS NEXT PART)
------------------------------------------------------------ */
-/* -----------------------------------------------------------
-   MAIN TIMER LOGIC
+   GLOBAL ELEMENTS
 ----------------------------------------------------------- */
 
 const targetInput = document.getElementById("target-datetime");
@@ -238,9 +11,25 @@ const bigTimer = document.getElementById("big-timer");
 const directionLabel = document.getElementById("direction-label");
 const extraMessage = document.getElementById("extra-message");
 
-const mainProgressBar = document.getElementById("main-progress-bar");
-const mainProgressFill = document.getElementById("main-progress-fill");
-const mainProgressCircle = document.getElementById("main-progress-circle");
+const copyTimerBtn = document.getElementById("copy-timer");
+
+const settingsBtn = document.getElementById("settings-btn");
+const settingsPanel = document.getElementById("settings-panel");
+const closeSettings = document.getElementById("close-settings");
+
+const focusModeBtn = document.getElementById("focus-mode-btn");
+
+const setDarkMode = document.getElementById("set-dark-mode");
+const setHighContrast = document.getElementById("set-high-contrast");
+const setMoreAnimations = document.getElementById("set-more-animations");
+const setHoverGlow = document.getElementById("set-hover-glow");
+const setRounded = document.getElementById("set-rounded");
+const setExtraSpacing = document.getElementById("set-extra-spacing");
+const setCompact = document.getElementById("set-compact");
+
+/* -----------------------------------------------------------
+   MAIN TIMER
+----------------------------------------------------------- */
 
 let mainTimerActive = false;
 let mainTargetTime = null;
@@ -261,23 +50,34 @@ startTimerBtn.addEventListener("click", () => {
     mainTimerActive = true;
 });
 
-/* -----------------------------------------------------------
-   MAIN TIMER UPDATE LOOP
------------------------------------------------------------ */
+copyTimerBtn.addEventListener("click", () => {
+    navigator.clipboard.writeText(bigTimer.textContent);
+});
+
+/* Format time into d/h/m/s */
+function formatTime(ms) {
+    const sec = Math.floor(ms / 1000);
+    const min = Math.floor(sec / 60);
+    const hr = Math.floor(min / 60);
+    const day = Math.floor(hr / 24);
+
+    const s = sec % 60;
+    const m = min % 60;
+    const h = hr % 24;
+
+    return `${day}d ${h}h ${m}m ${s}s`;
+}
 
 function updateMainTimer() {
     if (!mainTimerActive || !mainTargetTime) return;
 
     const now = new Date();
     const diff = mainTargetTime - now;
-
     const past = diff < 0;
     const absDiff = Math.abs(diff);
 
-    // Direction label
     directionLabel.textContent = past ? "Time since target:" : "Time until target:";
 
-    // Format display
     let displayValue = "";
 
     switch (displayMode.value) {
@@ -301,103 +101,68 @@ function updateMainTimer() {
     }
 
     bigTimer.textContent = displayValue;
-
-    // Extra message
     extraMessage.textContent = past ? "Target time has passed." : "";
-
-    // Progress bar
-    const total = Math.abs(mainTargetTime - new Date(targetInput.value));
-    const progress = Math.min(absDiff / total, 1);
-
-    mainProgressFill.style.width = `${(1 - progress) * 100}%`;
-
-    // Progress circle
-    const circleProgress = (1 - progress);
-    mainProgressCircle.style.background = `
-        conic-gradient(#111 ${circleProgress * 360}deg, transparent 0deg)
-    `;
-}
-
-/* Format time into d/h/m/s */
-function formatTime(ms) {
-    const sec = Math.floor(ms / 1000);
-    const min = Math.floor(sec / 60);
-    const hr = Math.floor(min / 60);
-    const day = Math.floor(hr / 24);
-
-    const s = sec % 60;
-    const m = min % 60;
-    const h = hr % 24;
-
-    return `${day}d ${h}h ${m}m ${s}s`;
 }
 
 /* -----------------------------------------------------------
-   TWO-TIME RANGE MODE
+   SMART PRESETS
 ----------------------------------------------------------- */
 
-const rangeStart = document.getElementById("range-start");
-const rangeEnd = document.getElementById("range-end");
-const rangeActivate = document.getElementById("range-activate");
-
-const rangeLabel = document.getElementById("range-label");
-const rangeTimer = document.getElementById("range-timer");
-const rangeExtra = document.getElementById("range-extra");
-
-const rangeProgressFill = document.getElementById("range-progress-fill");
-const rangeProgressCircle = document.getElementById("range-progress-circle");
-
-let rangeActive = false;
-let rangeStartTime = null;
-let rangeEndTime = null;
-
-rangeActivate.addEventListener("click", () => {
-    if (!rangeStart.value || !rangeEnd.value) {
-        alert("Choose both start and end times.");
-        return;
-    }
-
-    rangeStartTime = new Date(rangeStart.value);
-    rangeEndTime = new Date(rangeEnd.value);
-
-    if (rangeEndTime <= rangeStartTime) {
-        alert("End time must be after start time.");
-        return;
-    }
-
-    rangeActive = true;
-    rangeLabel.textContent = "Range active:";
+document.querySelectorAll(".preset-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        applyPreset(btn.dataset.preset);
+    });
 });
 
-/* -----------------------------------------------------------
-   RANGE UPDATE LOOP
------------------------------------------------------------ */
-
-function updateRangeTimer() {
-    if (!rangeActive) return;
-
+function applyPreset(preset) {
     const now = new Date();
 
-    const total = rangeEndTime - rangeStartTime;
-    const elapsed = now - rangeStartTime;
-    const remaining = rangeEndTime - now;
+    switch (preset) {
+        case "midnight":
+            const midnight = new Date();
+            midnight.setHours(23, 59, 59, 999);
+            targetInput.value = midnight.toISOString().slice(0, 16);
+            break;
 
-    const progress = Math.min(Math.max(elapsed / total, 0), 1);
+        case "next-school-day":
+            const next = new Date();
+            next.setDate(next.getDate() + (next.getDay() === 5 ? 3 : 1));
+            next.setHours(9, 0, 0, 0);
+            targetInput.value = next.toISOString().slice(0, 16);
+            break;
 
-    rangeTimer.textContent = `${(progress * 100).toFixed(2)}%`;
+        case "end-school-day":
+            const end = new Date();
+            end.setHours(15, 20, 0, 0);
+            targetInput.value = end.toISOString().slice(0, 16);
+            break;
 
-    rangeExtra.textContent =
-        `Elapsed: ${formatTime(elapsed)} | Remaining: ${formatTime(remaining)}`;
+        case "end-week":
+            const week = new Date();
+            week.setDate(week.getDate() + (6 - week.getDay()));
+            week.setHours(23, 59, 59, 999);
+            targetInput.value = week.toISOString().slice(0, 16);
+            break;
 
-    rangeProgressFill.style.width = `${progress * 100}%`;
+        case "end-weekend":
+            const weekend = new Date();
+            weekend.setDate(weekend.getDate() + (7 - weekend.getDay()));
+            weekend.setHours(23, 59, 59, 999);
+            targetInput.value = weekend.toISOString().slice(0, 16);
+            break;
 
-    rangeProgressCircle.style.background = `
-        conic-gradient(#111 ${progress * 360}deg, transparent 0deg)
-    `;
+        case "christmas":
+            const xmas = new Date(new Date().getFullYear(), 11, 25, 0, 0, 0);
+            targetInput.value = xmas.toISOString().slice(0, 16);
+            break;
+    }
+
+    mainTargetTime = new Date(targetInput.value);
+    mainTimerActive = true;
 }
 
 /* -----------------------------------------------------------
-   COUNTDOWN TIMER
+   COUNTDOWN
 ----------------------------------------------------------- */
 
 const cdDays = document.getElementById("cd-days");
@@ -410,8 +175,7 @@ const cdPause = document.getElementById("cd-pause");
 const cdReset = document.getElementById("cd-reset");
 
 const cdDisplay = document.getElementById("cd-display");
-const cdProgressFill = document.getElementById("cd-progress-fill");
-const cdProgressCircle = document.getElementById("cd-progress-circle");
+const cdCircle = document.getElementById("cd-progress-circle");
 
 let cdTotal = 0;
 let cdRemaining = 0;
@@ -445,8 +209,7 @@ cdReset.addEventListener("click", () => {
     cdRunning = false;
     cdRemaining = 0;
     cdDisplay.textContent = "--";
-    cdProgressFill.style.width = "0%";
-    cdProgressCircle.style.background = "none";
+    cdCircle.style.background = "none";
 });
 
 function updateCountdown() {
@@ -457,29 +220,21 @@ function updateCountdown() {
     if (cdRemaining <= 0) {
         cdRunning = false;
         cdDisplay.textContent = "Finished!";
-        cdProgressFill.style.width = "100%";
-
-        document.getElementById("timer-tools-title").classList.add("flash-tools");
-        setTimeout(() => {
-            document.getElementById("timer-tools-title").classList.remove("flash-tools");
-        }, 3000);
-
+        cdCircle.style.background = `
+            conic-gradient(#111 360deg, rgba(0,0,0,0.12) 0deg)
+        `;
         return;
     }
 
     cdDisplay.textContent = formatTime(cdRemaining * 1000);
 
     const progress = 1 - cdRemaining / cdTotal;
-    cdProgressFill.style.width = `${progress * 100}%`;
 
-    cdProgressCircle.style.background = `
-        conic-gradient(#111 ${progress * 360}deg, transparent 0deg)
+    cdCircle.style.background = `
+        conic-gradient(#111 ${progress * 360}deg, rgba(0,0,0,0.12) 0deg)
     `;
 }
 
-/* -----------------------------------------------------------
-   STOPWATCH (CONTINUES NEXT PART)
------------------------------------------------------------ */
 /* -----------------------------------------------------------
    STOPWATCH
 ----------------------------------------------------------- */
@@ -492,8 +247,7 @@ const swAddSeconds = document.getElementById("sw-add-seconds");
 const swAddBtn = document.getElementById("sw-add-btn");
 
 const swDisplay = document.getElementById("sw-display");
-const swProgressFill = document.getElementById("sw-progress-fill");
-const swProgressCircle = document.getElementById("sw-progress-circle");
+const swCircle = document.getElementById("sw-progress-circle");
 const swLaps = document.getElementById("sw-laps");
 
 let swTime = 0;
@@ -515,8 +269,7 @@ swReset.addEventListener("click", () => {
     swRunning = false;
     swTime = 0;
     swDisplay.textContent = "--";
-    swProgressFill.style.width = "0%";
-    swProgressCircle.style.background = "none";
+    swCircle.style.background = "none";
     swLaps.innerHTML = "";
 });
 
@@ -541,27 +294,18 @@ function updateStopwatch() {
     const m = min % 60;
     const h = hr;
 
-    if (document.getElementById("set-sw-ms").checked) {
-        swDisplay.textContent = `${h}h ${m}m ${s}s ${ms % 1000}ms`;
-    } else {
-        swDisplay.textContent = `${h}h ${m}m ${s}s`;
-    }
+    swDisplay.textContent = `${h}h ${m}m ${s}s`;
 
     const progress = (ms % 60000) / 60000;
-    swProgressFill.style.width = `${progress * 100}%`;
 
-    swProgressCircle.style.background = `
-        conic-gradient(#111 ${progress * 360}deg, transparent 0deg)
+    swCircle.style.background = `
+        conic-gradient(#111 ${progress * 360}deg, rgba(0,0,0,0.12) 0deg)
     `;
 }
 
-/* -----------------------------------------------------------
-   LAPS
------------------------------------------------------------ */
+/* LAPS */
 
 swDisplay.addEventListener("click", () => {
-    if (!document.getElementById("set-sw-laps").checked) return;
-
     const ms = swTime;
     const sec = Math.floor(ms / 1000);
     const min = Math.floor(sec / 60);
@@ -589,12 +333,146 @@ document.querySelectorAll(".collapsible").forEach(title => {
 });
 
 /* -----------------------------------------------------------
+   SETTINGS PANEL
+----------------------------------------------------------- */
+
+settingsBtn.addEventListener("click", () => {
+    settingsPanel.classList.toggle("hidden");
+});
+
+closeSettings.addEventListener("click", () => {
+    settingsPanel.classList.add("hidden");
+});
+
+/* UI MODES */
+
+setDarkMode.addEventListener("change", () => {
+    document.body.classList.toggle("dark-mode", setDarkMode.checked);
+});
+
+setHighContrast.addEventListener("change", () => {
+    document.body.classList.toggle("high-contrast", setHighContrast.checked);
+});
+
+setMoreAnimations.addEventListener("change", () => {
+    document.body.classList.toggle("more-animations", setMoreAnimations.checked);
+});
+
+setHoverGlow.addEventListener("change", () => {
+    document.body.classList.toggle("hover-glow", setHoverGlow.checked);
+});
+
+setRounded.addEventListener("change", () => {
+    document.body.classList.toggle("rounded", setRounded.checked);
+});
+
+setExtraSpacing.addEventListener("change", () => {
+    document.body.classList.toggle("extra-spacing", setExtraSpacing.checked);
+});
+
+setCompact.addEventListener("change", () => {
+    document.body.classList.toggle("compact", setCompact.checked);
+});
+
+/* -----------------------------------------------------------
+   FOCUS MODE
+----------------------------------------------------------- */
+
+focusModeBtn.addEventListener("click", () => {
+    document.body.classList.toggle("focus-mode-active");
+});
+
+/* -----------------------------------------------------------
+   TUTORIAL
+----------------------------------------------------------- */
+
+const tutorialOverlay = document.getElementById("tutorial-overlay");
+const tutorialHighlight = document.getElementById("tutorial-highlight");
+const tutorialText = document.getElementById("tutorial-text");
+const tutorialProgressFill = document.querySelector(".tutorial-progress-fill");
+
+const openTutorialBtn = document.getElementById("open-tutorial");
+const tutorialPrev = document.getElementById("tutorial-prev");
+const tutorialNext = document.getElementById("tutorial-next");
+const tutorialFinish = document.getElementById("tutorial-finish");
+
+let tutorialRunning = false;
+let tutorialIndex = 0;
+
+const tutorialStepsData = [
+    { selector: "#input-body", text: "This is where you choose your target date and time." },
+    { selector: "#presets-body", text: "Smart presets give you quick shortcuts for common times." },
+    { selector: "#display-body", text: "This is the main timer display." },
+    { selector: "#tools-body", text: "Timer Tools include a countdown and stopwatch." }
+];
+
+function showTutorialStep() {
+    const step = tutorialStepsData[tutorialIndex];
+    const targetEl = document.querySelector(step.selector);
+    if (!targetEl) return;
+
+    const rect = targetEl.getBoundingClientRect();
+
+    tutorialHighlight.style.left = `${rect.left + window.scrollX}px`;
+    tutorialHighlight.style.top = `${rect.top + window.scrollY}px`;
+    tutorialHighlight.style.width = `${rect.width}px`;
+    tutorialHighlight.style.height = `${rect.height}px`;
+
+    tutorialText.textContent = step.text;
+
+    const percent = ((tutorialIndex + 1) / tutorialStepsData.length) * 100;
+    tutorialProgressFill.style.width = `${percent}%`;
+
+    const centerY = rect.top + window.scrollY - (window.innerHeight / 2) + (rect.height / 2);
+
+    window.scrollTo({
+        top: centerY,
+        behavior: "smooth"
+    });
+}
+
+openTutorialBtn.addEventListener("click", () => {
+    tutorialOverlay.classList.remove("hidden");
+    tutorialRunning = true;
+    tutorialIndex = 0;
+
+    document.body.style.overflow = "hidden";
+
+    showTutorialStep();
+});
+
+tutorialNext.addEventListener("click", () => {
+    if (!tutorialRunning) return;
+    if (tutorialIndex < tutorialStepsData.length - 1) {
+        tutorialIndex++;
+        showTutorialStep();
+    }
+});
+
+tutorialPrev.addEventListener("click", () => {
+    if (!tutorialRunning) return;
+    if (tutorialIndex > 0) {
+        tutorialIndex--;
+        showTutorialStep();
+    }
+});
+
+tutorialFinish.addEventListener("click", () => {
+    tutorialOverlay.classList.add("hidden");
+    tutorialRunning = false;
+    document.body.style.overflow = "";
+});
+
+tutorialOverlay.addEventListener("wheel", (e) => {
+    if (tutorialRunning) e.preventDefault();
+}, { passive: false });
+
+/* -----------------------------------------------------------
    MAIN UPDATE LOOP
 ----------------------------------------------------------- */
 
 function updateAll() {
     updateMainTimer();
-    updateRangeTimer();
     requestAnimationFrame(updateAll);
 }
 

@@ -16,3 +16,4 @@ Timer is built entirely with standard web technologies and contains no external 
 The philosophy behind Timer centers on clarity, calmness, and simplicity. The tool avoids clutter and unnecessary features, focusing instead on delivering a clean and enjoyable experience. Its design encourages users to engage with time in a way that feels thoughtful and visually pleasing.
 
 Timer is open for personal use, modification, and expansion. It can serve as a standalone utility, a component of a larger project, or a foundation for more advanced time‑related tools. The project reflects a balance of elegance and practicality, making it a unique addition to any collection of web tools.
+https://willsimeonidis.github.io/Timer/

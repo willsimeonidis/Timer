@@ -209,7 +209,10 @@ cdReset.addEventListener("click", () => {
     cdRunning = false;
     cdRemaining = 0;
     cdDisplay.textContent = "--";
-    cdCircle.style.background = "none";
+  cdCircle.style.background = `
+    conic-gradient(#111 ${progress * 360}deg, rgba(0,0,0,0.12) 0deg)
+`;
+
 });
 
 function updateCountdown() {

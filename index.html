@@ -11,27 +11,33 @@
 <header class="site-header">
     <div class="masthead">
         <h1 class="site-title">TIMER</h1>
-        <p class="site-tagline">Clean time calculator · Count up & count down · 8H-News style</p>
+        <p class="site-tagline">Bathurst · Denison College · Clean Time Tools</p>
     </div>
 </header>
 
 <main class="layout">
 
-    <!-- INPUT SECTION -->
-    <section class="panel panel-middle" id="section-input">
+    <!-- SECTION 1 — INPUT -->
+    <section class="panel" id="section-input">
         <div class="panel-header">
             <h2 class="panel-title">Choose any date & time</h2>
-            <button id="open-tutorial" class="btn btn-small">Show tutorial</button>
+
+            <div class="top-buttons">
+                <button id="settings-btn" class="btn btn-small">Settings</button>
+                <button id="open-tutorial" class="btn btn-small">Show tutorial</button>
+                <button id="start-timer" class="btn btn-primary">Show time</button>
+            </div>
         </div>
 
         <div class="input-row">
+
             <div class="input-group">
-                <label for="target-datetime" class="label">Target date & time</label>
+                <label class="label">Target date & time</label>
                 <input type="datetime-local" id="target-datetime" class="input">
             </div>
 
             <div class="input-group">
-                <label for="display-mode" class="label">Display as</label>
+                <label class="label">Display as</label>
                 <select id="display-mode" class="select">
                     <option value="normal">Normal</option>
                     <option value="seconds">Seconds</option>
@@ -42,14 +48,15 @@
                 </select>
             </div>
 
-            <button id="start-timer" class="btn btn-primary">Show time</button>
+            <button id="today-btn" class="btn btn-small">Today</button>
         </div>
     </section>
 
-    <!-- DISPLAY SECTION -->
-    <section class="panel panel-display" id="section-display">
+    <!-- SECTION 2 — TIMER DISPLAY -->
+    <section class="panel" id="section-display">
         <div class="panel-header">
-            <h2 class="panel-title">Time between now and your date</h2>
+            <h2 class="panel-title">Timer</h2>
+            <button id="focus-mode-btn" class="btn btn-small">Focus mode</button>
         </div>
 
         <div class="display-wrapper">
@@ -60,38 +67,98 @@
                 <div id="big-timer" class="big-timer">--</div>
             </div>
 
+            <div id="progress-bar" class="progress-bar"></div>
+
             <p id="extra-message" class="extra-message"></p>
+        </div>
+    </section>
+
+    <!-- SECTION 3 — SMART PRESETS -->
+    <section class="panel" id="section-presets">
+        <div class="panel-header">
+            <h2 class="panel-title">Smart presets</h2>
+        </div>
+
+        <div class="preset-list">
+
+            <button class="preset-btn" data-preset="midnight">Time until midnight</button>
+
+            <button class="preset-btn" data-preset="next-school-day">
+                Time until next school day (Denison)
+            </button>
+
+            <button class="preset-btn" data-preset="end-school-day">
+                Time until end of school day (3:20pm)
+            </button>
+
+            <button class="preset-btn" data-preset="end-week">
+                Time until end of week (Friday 3:20pm)
+            </button>
+
+            <button class="preset-btn" data-preset="end-weekend">
+                Time until end of weekend (Sunday night)
+            </button>
+
+            <button class="preset-btn" data-preset="christmas">
+                Time until Christmas
+            </button>
+
+            <button class="preset-btn" data-preset="natural">
+                Natural language shortcuts
+            </button>
+
         </div>
     </section>
 
 </main>
 
 <footer class="site-footer">
-    <p class="footer-text">Timer · Built in the spirit of 8H-News · Light, clean, phone-friendly.</p>
+    <p class="footer-text">Timer · Built for Bathurst NSW · Denison College</p>
 </footer>
+
+<!-- SETTINGS PANEL -->
+<div id="settings-panel" class="settings-panel hidden">
+    <div class="settings-inner">
+        <h3 class="settings-title">Settings</h3>
+
+        <label class="settings-option">
+            <input type="checkbox" id="toggle-progress-bar">
+            Show progress bar
+        </label>
+
+        <label class="settings-option">
+            <input type="checkbox" id="toggle-progress-circle">
+            Show progress circle
+        </label>
+
+        <button id="close-settings" class="btn btn-small">Close</button>
+    </div>
+</div>
 
 <!-- TUTORIAL OVERLAY -->
 <div id="tutorial-overlay" class="tutorial-overlay hidden">
     <div class="tutorial-backdrop"></div>
 
-    <!-- WELCOME SCREEN -->
+    <!-- WELCOME -->
     <div id="tutorial-welcome" class="tutorial-center">
         <div class="tutorial-welcome-text">Welcome</div>
         <div id="tutorial-proceed" class="tutorial-subtext">Tap here to proceed</div>
         <button id="tutorial-skip" class="btn btn-small tutorial-skip">Skip tutorial</button>
     </div>
 
-    <!-- STEP-BY-STEP -->
+    <!-- STEPS -->
     <div id="tutorial-steps" class="tutorial-steps hidden">
         <div id="tutorial-highlight" class="tutorial-highlight"></div>
 
         <div class="tutorial-info">
             <div id="tutorial-text" class="tutorial-text"></div>
 
+            <div class="tutorial-progress-bar" id="tutorial-progress-bar"></div>
+
             <div class="tutorial-controls">
                 <button id="tutorial-prev" class="btn btn-small">Previous</button>
                 <button id="tutorial-next" class="btn btn-small">Next</button>
-                <button id="tutorial-finish" class="btn btn-small btn-primary">Finish tutorial</button>
+                <button id="tutorial-finish" class="btn btn-small btn-primary">Finish</button>
             </div>
         </div>
     </div>

@@ -583,5 +583,64 @@ body.compact .panel {
 
     .tutorial-info {
         max-width: calc(100% - 32px);
+
+    /* FULL BLACK DARK MODE */
+body.dark-mode {
+    background: #000;
+    color: #e6e6e6;
+}
+
+body.dark-mode .panel {
+    background: #0d0d0d;
+    border-color: #333;
+}
+
+body.dark-mode .site-header {
+    background: #0d0d0d;
+    border-bottom-color: #444;
+}
+
+body.dark-mode .input,
+body.dark-mode .select {
+    background: #1a1a1a;
+    border-color: #555;
+    color: #e6e6e6;
+}
+
+body.dark-mode .btn {
+    background: #1a1a1a;
+    color: #e6e6e6;
+    border-color: #e6e6e6;
+}
+
+body.dark-mode .btn-primary {
+    background: #e6e6e6;
+    color: #000;
+}
+
+body.dark-mode .progress-bar {
+    background: #333;
+}
+
+body.dark-mode .progress-bar-fill {
+    background: #e6e6e6;
+}
+
+body.dark-mode .progress-circle {
+    border-color: rgba(230,230,230,0.3);
+}
+
+body.dark-mode .settings-panel {
+    background: #0d0d0d;
+    border-left-color: #444;
+}
+
+body.dark-mode .settings-section h4,
+body.dark-mode .settings-option {
+    color: #e6e6e6;
+}
+
+/* Everything else stays the same as your previous version */
+
     }
 }

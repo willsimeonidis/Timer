@@ -294,7 +294,6 @@ body {
     font-size: 0.8rem;
     text-align: left;
 }
-
 /* SETTINGS PANEL */
 
 .settings-panel {
@@ -460,20 +459,20 @@ body {
     100% { background: #111; color: #fdfaf3; }
 }
 
-/* DARK MODE / HIGH CONTRAST / VISUAL MODES */
+/* DARK MODE — FULL BLACK */
 
 body.dark-mode {
-    background: #121212;
-    color: #f5f5f5;
+    background: #000;
+    color: #e6e6e6;
 }
 
 body.dark-mode .site-header {
-    background: #1e1e1e;
-    border-bottom-color: #333;
+    background: #0d0d0d;
+    border-bottom-color: #444;
 }
 
 body.dark-mode .panel {
-    background: #1b1b1b;
+    background: #0d0d0d;
     border-color: #333;
 }
 
@@ -481,123 +480,7 @@ body.dark-mode .panel-title,
 body.dark-mode .label,
 body.dark-mode .direction-label,
 body.dark-mode .footer-text {
-    color: #f5f5f5;
-}
-
-body.dark-mode .input,
-body.dark-mode .select {
-    background: #262626;
-    border-color: #555;
-    color: #f5f5f5;
-}
-
-body.dark-mode .btn {
-    background: #262626;
-    color: #f5f5f5;
-    border-color: #f5f5f5;
-}
-
-body.dark-mode .btn-primary {
-    background: #f5f5f5;
-    color: #121212;
-}
-
-body.dark-mode .progress-bar {
-    background: #333;
-}
-
-body.dark-mode .progress-bar-fill {
-    background: #f5f5f5;
-}
-
-body.dark-mode .progress-circle {
-    border-color: rgba(245,245,245,0.3);
-}
-
-body.high-contrast .progress-bar {
-    background: #000;
-}
-
-body.high-contrast .progress-bar-fill {
-    background: #ff0;
-}
-
-body.more-animations .progress-bar-fill {
-    transition: width 0.6s ease;
-}
-
-body.hover-glow .btn:hover {
-    box-shadow: 0 0 8px rgba(0,0,0,0.6);
-}
-
-body.rounded .panel,
-body.rounded .btn,
-body.rounded .input,
-body.rounded .select {
-    border-radius: 8px;
-}
-
-body.extra-spacing .panel {
-    padding: 20px 18px;
-}
-
-body.compact .panel {
-    padding: 8px 10px;
-}
-
-/* MOBILE */
-
-@media (max-width: 640px) {
-    .site-title {
-        font-size: 1.8rem;
-        letter-spacing: 0.12em;
-    }
-
-    .input-row {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .btn,
-    .btn-primary {
-        width: 100%;
-    }
-
-    .timer-row {
-        flex-direction: column;
-    }
-
-    .btn-copy {
-        align-self: flex-start;
-    }
-
-    .settings-panel {
-        width: 100%;
-        border-left: none;
-        border-top: 2px solid #111;
-    }
-
-    .tools-grid {
-        flex-direction: column;
-    }
-
-    .tutorial-info {
-        max-width: calc(100% - 32px);
-
-    /* FULL BLACK DARK MODE */
-body.dark-mode {
-    background: #000;
     color: #e6e6e6;
-}
-
-body.dark-mode .panel {
-    background: #0d0d0d;
-    border-color: #333;
-}
-
-body.dark-mode .site-header {
-    background: #0d0d0d;
-    border-bottom-color: #444;
 }
 
 body.dark-mode .input,
@@ -639,8 +522,167 @@ body.dark-mode .settings-section h4,
 body.dark-mode .settings-option {
     color: #e6e6e6;
 }
+/* HIGH CONTRAST MODE */
 
-/* Everything else stays the same as your previous version */
+body.high-contrast {
+    background: #fff;
+    color: #000;
+}
 
+body.high-contrast .panel {
+    background: #fff;
+    border-color: #000;
+}
+
+body.high-contrast .input,
+body.high-contrast .select {
+    background: #fff;
+    border-color: #000;
+    color: #000;
+}
+
+body.high-contrast .btn {
+    background: #fff;
+    color: #000;
+    border-color: #000;
+}
+
+body.high-contrast .btn-primary {
+    background: #000;
+    color: #fff;
+}
+
+body.high-contrast .progress-bar {
+    background: #ccc;
+}
+
+body.high-contrast .progress-bar-fill {
+    background: #000;
+}
+
+body.high-contrast .progress-circle {
+    border-color: #000;
+}
+
+body.high-contrast .settings-panel {
+    background: #fff;
+    border-left-color: #000;
+}
+
+body.high-contrast .settings-section h4,
+body.high-contrast .settings-option {
+    color: #000;
+}
+
+/* COMPACT MODE */
+
+body.compact .panel {
+    padding: 8px 10px;
+}
+
+body.compact .input,
+body.compact .select {
+    padding: 6px 8px;
+}
+
+body.compact .btn {
+    padding: 6px 10px;
+}
+
+body.compact .big-timer {
+    font-size: clamp(2rem, 5vw, 3rem);
+}
+
+/* EXTRA SPACING MODE */
+
+body.extra-spacing .panel {
+    padding: 20px 22px;
+}
+
+body.extra-spacing .input,
+body.extra-spacing .select {
+    padding: 12px 14px;
+}
+
+body.extra-spacing .btn {
+    padding: 12px 18px;
+}
+
+body.extra-spacing .big-timer {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+/* ROUNDED CORNERS MODE */
+
+body.rounded .panel,
+body.rounded .input,
+body.rounded .select,
+body.rounded .btn,
+body.rounded .preset-btn,
+body.rounded .settings-panel,
+body.rounded .tutorial-info {
+    border-radius: 10px;
+}
+
+/* BUTTON HOVER GLOW */
+
+body.hover-glow .btn:hover,
+body.hover-glow .preset-btn:hover {
+    box-shadow: 0 0 10px rgba(255,255,255,0.4);
+}
+
+/* ANIMATIONS */
+
+body.more-animations .progress-bar-fill {
+    transition: width 0.6s ease;
+}
+
+body.more-animations .tutorial-progress-fill {
+    transition: width 0.6s ease;
+}
+
+body.more-animations .panel {
+    transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+/* COLLAPSIBLE PANELS */
+
+.collapsible {
+    cursor: pointer;
+}
+
+.collapsible::after {
+    content: "▼";
+    font-size: 0.7rem;
+    margin-left: 6px;
+}
+
+.collapsible.collapsed::after {
+    content: "▲";
+}
+
+.collapsed + div {
+    display: none;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 600px) {
+    .tools-grid {
+        flex-direction: column;
+    }
+
+    .settings-panel {
+        width: 100%;
+        border-left: none;
+        border-top: 2px solid #111;
+    }
+
+    .tutorial-info {
+        left: 8px;
+        right: 8px;
+        bottom: 8px;
+        max-width: none;
     }
 }

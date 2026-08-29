@@ -1,5 +1,3 @@
-/* Base layout – light, newspaper-ish, phone friendly */
-
 * {
     box-sizing: border-box;
 }
@@ -57,6 +55,9 @@ body {
 }
 
 .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     border-bottom: 1px solid #e0d7c4;
     margin-bottom: 10px;
     padding-bottom: 6px;
@@ -134,9 +135,14 @@ body {
     background: #333;
 }
 
+.btn-small {
+    font-size: 0.75rem;
+    padding: 6px 10px;
+    letter-spacing: 0.14em;
+}
+
 /* Rows */
 
-.preset-row,
 .input-row {
     display: flex;
     flex-wrap: wrap;
@@ -144,9 +150,8 @@ body {
     align-items: flex-end;
 }
 
-.preset-group,
 .input-group {
-    flex: 1 1 180px;
+    flex: 1 1 220px;
 }
 
 /* Display */
@@ -164,73 +169,34 @@ body {
     color: #555;
 }
 
+.timer-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 10px 0;
+}
+
+.btn-copy {
+    font-size: 0.7rem;
+    padding: 6px 8px;
+}
+
 .big-timer {
     font-family: "Courier New", monospace;
-    font-size: 2.4rem;
+    font-size: clamp(2.4rem, 6vw, 3.4rem);
     line-height: 1.3;
-    margin: 8px 0 6px;
-    padding: 10px 12px;
-    border: 1px solid #c9c0ad;
-    background: #fff;
-    display: inline-block;
-    min-width: 260px;
-    animation: timerPulse 1s infinite;
+    margin: 0;
+    padding: 4px 0;
+    color: #000;
 }
+
+/* Extra message */
 
 .extra-message {
     margin: 6px 0 0;
     font-size: 0.9rem;
     color: #666;
-}
-
-/* Timer pulse animation */
-
-@keyframes timerPulse {
-    0% { transform: scale(1); }
-    40% { transform: scale(1.02); }
-    100% { transform: scale(1); }
-}
-
-/* Confetti */
-
-.confetti-container {
-    pointer-events: none;
-    position: fixed;
-    inset: 0;
-    overflow: hidden;
-    z-index: 999;
-}
-
-.confetti-piece {
-    position: absolute;
-    width: 6px;
-    height: 14px;
-    background: #e63946;
-    opacity: 0.9;
-    animation: confettiFall 1.8s linear forwards;
-}
-
-.confetti-piece:nth-child(3n) {
-    background: #f1fa8c;
-}
-
-.confetti-piece:nth-child(3n+1) {
-    background: #457b9d;
-}
-
-.confetti-piece:nth-child(3n+2) {
-    background: #2a9d8f;
-}
-
-@keyframes confettiFall {
-    0% {
-        transform: translateY(-20px) rotate(0deg);
-        opacity: 1;
-    }
-    100% {
-        transform: translateY(120vh) rotate(360deg);
-        opacity: 0;
-    }
 }
 
 /* Footer */
@@ -249,6 +215,113 @@ body {
     color: #666;
 }
 
+/* Tutorial overlay */
+
+.tutorial-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    pointer-events: auto;
+}
+
+.hidden {
+    display: none;
+}
+
+.tutorial-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+/* Welcome */
+
+.tutorial-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.tutorial-welcome-text {
+    font-size: clamp(2.4rem, 7vw, 3.6rem);
+    color: #fdfaf3;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-bottom: 12px;
+}
+
+.tutorial-subtext {
+    font-size: 0.95rem;
+    color: #fdfaf3;
+    margin-bottom: 24px;
+}
+
+.tutorial-skip {
+    position: absolute;
+    left: 16px;
+    bottom: 16px;
+    pointer-events: auto;
+}
+
+/* Steps */
+
+.tutorial-steps {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.tutorial-highlight {
+    position: absolute;
+    border: 2px solid #fdfaf3;
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.7);
+    border-radius: 6px;
+    pointer-events: none;
+}
+
+.tutorial-info {
+    position: absolute;
+    left: 16px;
+    bottom: 16px;
+    max-width: 420px;
+    background: rgba(250, 247, 240, 0.96);
+    border-radius: 6px;
+    padding: 10px 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    pointer-events: auto;
+}
+
+.tutorial-text {
+    font-size: 0.9rem;
+    color: #222;
+    margin-bottom: 8px;
+    overflow: hidden;
+}
+
+.tutorial-text.slide-in {
+    animation: tutorialSlideIn 0.35s ease forwards;
+}
+
+@keyframes tutorialSlideIn {
+    0% {
+        transform: translateY(12px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.tutorial-controls {
+    display: flex;
+    gap: 6px;
+}
+
 /* Mobile */
 
 @media (max-width: 640px) {
@@ -257,13 +330,6 @@ body {
         letter-spacing: 0.12em;
     }
 
-    .big-timer {
-        font-size: 1.8rem;
-        min-width: 0;
-        width: 100%;
-    }
-
-    .preset-row,
     .input-row {
         flex-direction: column;
         align-items: stretch;
@@ -272,5 +338,17 @@ body {
     .btn,
     .btn-primary {
         width: 100%;
+    }
+
+    .timer-row {
+        flex-direction: column;
+    }
+
+    .btn-copy {
+        align-self: flex-start;
+    }
+
+    .tutorial-info {
+        max-width: calc(100% - 32px);
     }
 }

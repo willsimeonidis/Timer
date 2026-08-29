@@ -1,100 +1,26 @@
-// ELEMENTS
-const targetInput = document.getElementById("target-datetime");
-const displayModeEl = document.getElementById("display-mode");
-const startBtn = document.getElementById("start-timer");
-const todayBtn = document.getElementById("today-btn");
+/* -----------------------------------------------------------
+   GLOBALS
+----------------------------------------------------------- */
 
-const directionLabelEl = document.getElementById("direction-label");
-const bigTimerEl = document.getElementById("big-timer");
-const extraMessageEl = document.getElementById("extra-message");
-const copyBtn = document.getElementById("copy-timer");
+let tutorialRunning = false;
+let tutorialIndex = 0;
 
-const mainBar = document.getElementById("main-progress-bar");
-const mainBarFill = document.getElementById("main-progress-fill");
-const mainCircle = document.getElementById("main-progress-circle");
-
-const rangeStartInput = document.getElementById("range-start");
-const rangeEndInput = document.getElementById("range-end");
-const rangeActivateBtn = document.getElementById("range-activate");
-const rangeLabel = document.getElementById("range-label");
-const rangeTimerEl = document.getElementById("range-timer");
-const rangeExtraEl = document.getElementById("range-extra");
-const rangeBar = document.getElementById("range-progress-bar");
-const rangeBarFill = document.getElementById("range-progress-fill");
-const rangeCircle = document.getElementById("range-progress-circle");
-
-const presetButtons = document.querySelectorAll(".preset-btn");
-
-const settingsBtn = document.getElementById("settings-btn");
-const settingsPanel = document.getElementById("settings-panel");
-const closeSettingsBtn = document.getElementById("close-settings");
-
-const focusModeBtn = document.getElementById("focus-mode-btn");
-
-const cdDays = document.getElementById("cd-days");
-const cdHours = document.getElementById("cd-hours");
-const cdMinutes = document.getElementById("cd-minutes");
-const cdSeconds = document.getElementById("cd-seconds");
-const cdStartBtn = document.getElementById("cd-start");
-const cdPauseBtn = document.getElementById("cd-pause");
-const cdResetBtn = document.getElementById("cd-reset");
-const cdDisplay = document.getElementById("cd-display");
-const cdBar = document.getElementById("cd-progress-bar");
-const cdBarFill = document.getElementById("cd-progress-fill");
-const cdCircle = document.getElementById("cd-progress-circle");
-
-const swStartBtn = document.getElementById("sw-start");
-const swPauseBtn = document.getElementById("sw-pause");
-const swResetBtn = document.getElementById("sw-reset");
-const swAddSecondsInput = document.getElementById("sw-add-seconds");
-const swAddBtn = document.getElementById("sw-add-btn");
-const swDisplay = document.getElementById("sw-display");
-const swBar = document.getElementById("sw-progress-bar");
-const swBarFill = document.getElementById("sw-progress-fill");
-const swCircle = document.getElementById("sw-progress-circle");
-const swLaps = document.getElementById("sw-laps");
-
-const openTutorialBtn = document.getElementById("open-tutorial");
 const tutorialOverlay = document.getElementById("tutorial-overlay");
-const tutorialStepsEl = document.getElementById("tutorial-steps");
 const tutorialHighlight = document.getElementById("tutorial-highlight");
 const tutorialText = document.getElementById("tutorial-text");
+const tutorialProgressFill = document.querySelector(".tutorial-progress-fill");
+
+const openTutorialBtn = document.getElementById("open-tutorial");
 const tutorialPrev = document.getElementById("tutorial-prev");
 const tutorialNext = document.getElementById("tutorial-next");
 const tutorialFinish = document.getElementById("tutorial-finish");
-const tutorialProgressBar = document.getElementById("tutorial-progress-bar");
-const tutorialProgressFill = tutorialProgressBar.querySelector(".tutorial-progress-fill");
 
-const setMainBar = document.getElementById("set-main-bar");
-const setMainCircle = document.getElementById("set-main-circle");
-const setMainCircleSize = document.getElementById("set-main-circle-size");
-const setMainBarThickness = document.getElementById("set-main-bar-thickness");
-const setMainFontSize = document.getElementById("set-main-font-size");
-const setMainFontFamily = document.getElementById("set-main-font-family");
+const settingsBtn = document.getElementById("settings-btn");
+const settingsPanel = document.getElementById("settings-panel");
+const closeSettings = document.getElementById("close-settings");
 
-const setCdBar = document.getElementById("set-cd-bar");
-const setCdCircle = document.getElementById("set-cd-circle");
-const setCdCircleSize = document.getElementById("set-cd-circle-size");
-const setCdBarThickness = document.getElementById("set-cd-bar-thickness");
-const setCdFlash = document.getElementById("set-cd-flash");
-
-const setSwBar = document.getElementById("set-sw-bar");
-const setSwCircle = document.getElementById("set-sw-circle");
-const setSwCircleSize = document.getElementById("set-sw-circle-size");
-const setSwBarThickness = document.getElementById("set-sw-bar-thickness");
-const setSwMs = document.getElementById("set-sw-ms");
-const setSwLaps = document.getElementById("set-sw-laps");
-
-const setRangeBar = document.getElementById("set-range-bar");
-const setRangeCircle = document.getElementById("set-range-circle");
-const setRangeCircleSize = document.getElementById("set-range-circle-size");
-const setRangeBarThickness = document.getElementById("set-range-bar-thickness");
-const setRangePercent = document.getElementById("set-range-percent");
-const setRangeRemaining = document.getElementById("set-range-remaining");
-const setRangeElapsed = document.getElementById("set-range-elapsed");
-
-const setTutSpotlight = document.getElementById("set-tut-spotlight");
 const setTutGlow = document.getElementById("set-tut-glow");
+const setTutSpotlight = document.getElementById("set-tut-spotlight");
 
 const setDarkMode = document.getElementById("set-dark-mode");
 const setHighContrast = document.getElementById("set-high-contrast");
@@ -104,810 +30,91 @@ const setRounded = document.getElementById("set-rounded");
 const setExtraSpacing = document.getElementById("set-extra-spacing");
 const setCompact = document.getElementById("set-compact");
 
-const setAutoSave = document.getElementById("set-auto-save");
-const setFps = document.getElementById("set-fps");
+const setFPS = document.getElementById("set-fps");
 const fpsDisplay = document.getElementById("fps-display");
 
-// STATE
-let mainTimerInterval = null;
-let lastCompactText = "--";
-let mainInitialDiffMs = null;
+let lastFrameTime = performance.now();
+let fpsEnabled = false;
 
-let rangeInterval = null;
-let rangeStart = null;
-let rangeEnd = null;
+/* -----------------------------------------------------------
+   TUTORIAL STEPS
+----------------------------------------------------------- */
 
-let cdInterval = null;
-let cdTotalMs = 0;
-let cdRemainingMs = 0;
-
-let swInterval = null;
-let swElapsedMs = 0;
-let swRunning = false;
-
-let tutorialIndex = 0;
-let tutorialRunning = false;
-
-let fpsLastTime = performance.now();
-let fpsFrames = 0;
-
-// TUTORIAL STEPS
 const tutorialStepsData = [
     {
         selector: "#section-input",
-        text: "This area lets you choose any date and time, and how you want the main timer to display."
-    },
-    {
-        selector: "#target-datetime",
-        text: "Tap here to select the exact date and time you want to count to or from."
-    },
-    {
-        selector: "#display-mode",
-        text: "Use this menu to switch between normal, seconds, minutes, hours, days, or approximate months."
-    },
-    {
-        selector: "#start-timer",
-        text: "Press this button to show the time between now and your chosen moment."
+        text: "This is where you choose your target date and time."
     },
     {
         selector: "#section-display",
-        text: "This panel shows the main timer, its progress bar, and progress circle."
+        text: "This is the main timer display. It shows time until your target."
     },
     {
         selector: "#section-range",
-        text: "Two-time progress lets you pick a start and end time and see how far through that range you are."
+        text: "Two-time mode lets you track progress between two dates."
     },
     {
         selector: "#section-presets",
-        text: "Smart presets use Bathurst / Denison school times and other useful targets."
+        text: "Smart presets give you quick shortcuts for common times."
     },
     {
         selector: "#section-tools",
-        text: "Timer tools give you a countdown and a stopwatch that can run alongside the main timer."
-    },
-    {
-        selector: "#cd-display",
-        text: "This is the countdown display. Set a duration and start it; it will tick down to zero."
-    },
-    {
-        selector: "#sw-display",
-        text: "This is the stopwatch display. You can start, pause, reset, and even add time."
+        text: "Timer Tools include a countdown and stopwatch that run alongside the main timer."
     }
 ];
 
-// MAIN TIMER
-startBtn.addEventListener("click", () => {
-    const targetValue = targetInput.value;
-    if (!targetValue) {
-        directionLabelEl.textContent = "Pick a date & time first.";
-        bigTimerEl.textContent = "--";
-        extraMessageEl.textContent = "";
-        lastCompactText = "--";
-        resetMainProgress();
-        return;
-    }
+/* -----------------------------------------------------------
+   TUTORIAL CENTER SCROLL + HIGHLIGHT
+----------------------------------------------------------- */
 
-    const targetDate = new Date(targetValue);
-    if (isNaN(targetDate.getTime())) {
-        directionLabelEl.textContent = "Invalid date.";
-        bigTimerEl.textContent = "--";
-        extraMessageEl.textContent = "";
-        lastCompactText = "--";
-        resetMainProgress();
-        return;
-    }
+function showTutorialStep() {
+    const step = tutorialStepsData[tutorialIndex];
+    const targetEl = document.querySelector(step.selector);
+    if (!targetEl) return;
 
-    startMainTimer(targetDate);
-});
+    const rect = targetEl.getBoundingClientRect();
 
-function startMainTimer(targetDate) {
-    if (mainTimerInterval) {
-        clearInterval(mainTimerInterval);
-        mainTimerInterval = null;
-    }
+    // Highlight EXACT element
+    tutorialHighlight.style.left = `${rect.left + window.scrollX}px`;
+    tutorialHighlight.style.top = `${rect.top + window.scrollY}px`;
+    tutorialHighlight.style.width = `${rect.width}px`;
+    tutorialHighlight.style.height = `${rect.height}px`;
 
-    const now = new Date();
-    mainInitialDiffMs = Math.abs(targetDate.getTime() - now.getTime());
+    tutorialText.textContent = step.text;
 
-    updateMainTimer(targetDate);
-    mainTimerInterval = setInterval(() => updateMainTimer(targetDate), 1000);
-}
+    const percent = ((tutorialIndex + 1) / tutorialStepsData.length) * 100;
+    tutorialProgressFill.style.width = `${percent}%`;
 
-function updateMainTimer(targetDate) {
-    const now = new Date();
-    let diffMs = targetDate.getTime() - now.getTime();
-    const isFuture = diffMs >= 0;
+    tutorialHighlight.style.boxShadow = setTutGlow.checked
+        ? "0 0 16px rgba(255,255,255,0.8)"
+        : "none";
 
-    const absDiffMs = Math.abs(diffMs);
-    const totalSeconds = Math.floor(absDiffMs / 1000);
-    const totalMinutes = Math.floor(totalSeconds / 60);
-    const totalHours = Math.floor(totalMinutes / 60);
-    const totalDays = Math.floor(totalHours / 24);
-    const approxMonths = Math.floor(totalDays / 30);
+    // Spotlight mode
+    tutorialOverlay.querySelector(".tutorial-backdrop").style.background =
+        setTutSpotlight.checked ? "rgba(0,0,0,0.85)" : "rgba(0,0,0,0.55)";
 
-    const years = Math.floor(totalDays / 365);
-    const remainingDaysAfterYears = totalDays - years * 365;
-    const hours = totalHours - totalDays * 24;
-    const minutes = totalMinutes - totalHours * 60;
-    const seconds = totalSeconds - totalMinutes * 60;
+    // CENTER SCROLL
+    const centerY = rect.top + window.scrollY - (window.innerHeight / 2) + (rect.height / 2);
 
-    const mode = displayModeEl.value;
-
-    if (isFuture) {
-        directionLabelEl.textContent = "Time until that moment";
-    } else {
-        directionLabelEl.textContent = "Time since that moment";
-    }
-
-    let displayText = "";
-    let compactText = "";
-
-    switch (mode) {
-        case "seconds":
-            displayText = `${totalSeconds.toLocaleString()} seconds`;
-            compactText = `${totalSeconds}s`;
-            break;
-        case "minutes":
-            displayText = `${totalMinutes.toLocaleString()} minutes`;
-            compactText = `${totalMinutes}m`;
-            break;
-        case "hours":
-            displayText = `${totalHours.toLocaleString()} hours`;
-            compactText = `${totalHours}h`;
-            break;
-        case "days":
-            displayText = `${totalDays.toLocaleString()} days`;
-            compactText = `${totalDays}d`;
-            break;
-        case "months":
-            displayText = `${approxMonths.toLocaleString()} months (approx)`;
-            compactText = `${approxMonths}mo`;
-            break;
-        default:
-            displayText = buildNormalText(years, remainingDaysAfterYears, hours, minutes, seconds);
-            compactText = buildCompactText(totalDays, hours, minutes, seconds);
-            break;
-    }
-
-    bigTimerEl.textContent = displayText;
-    lastCompactText = compactText;
-
-    if (isFuture) {
-        extraMessageEl.textContent = "";
-    } else {
-        extraMessageEl.textContent = "That time has already passed – now showing how long it’s been.";
-    }
-
-    updateMainProgress(absDiffMs, isFuture);
-}
-
-function buildNormalText(years, days, hours, minutes, seconds) {
-    const parts = [];
-    if (years) parts.push(`${years} year${years !== 1 ? "s" : ""}`);
-    if (days) parts.push(`${days} day${days !== 1 ? "s" : ""}`);
-    if (hours) parts.push(`${hours} hour${hours !== 1 ? "s" : ""}`);
-    if (minutes) parts.push(`${minutes} minute${minutes !== 1 ? "s" : ""}`);
-    if (seconds || parts.length === 0) parts.push(`${seconds} second${seconds !== 1 ? "s" : ""}`);
-    return parts.join(", ");
-}
-
-function buildCompactText(days, hours, minutes, seconds) {
-    const parts = [];
-    if (days) parts.push(`${days}d`);
-    if (hours) parts.push(`${hours}h`);
-    if (minutes) parts.push(`${minutes}m`);
-    if (seconds || parts.length === 0) parts.push(`${seconds}s`);
-    return parts.join(" ");
-}
-
-function resetMainProgress() {
-    mainBarFill.style.width = "0%";
-}
-
-function updateMainProgress(absDiffMs, isFuture) {
-    if (mainInitialDiffMs === null || mainInitialDiffMs === 0) return;
-    let percent = 100;
-    if (isFuture) {
-        const used = mainInitialDiffMs - absDiffMs;
-        percent = Math.max(0, Math.min(100, (used / mainInitialDiffMs) * 100));
-    }
-    mainBarFill.style.width = `${percent}%`;
-}
-
-// TODAY BUTTON
-todayBtn.addEventListener("click", () => {
-    const now = new Date();
-    targetInput.value = formatDateTimeLocal(now);
-});
-
-function formatDateTimeLocal(date) {
-    const pad = (n) => String(n).padStart(2, "0");
-    const year = date.getFullYear();
-    const month = pad(date.getMonth() + 1);
-    const day = pad(date.getDate());
-    const hours = pad(date.getHours());
-    const minutes = pad(date.getMinutes());
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-}
-
-// COPY BUTTON
-copyBtn.addEventListener("click", async () => {
-    try {
-        await navigator.clipboard.writeText(lastCompactText);
-    } catch (e) {
-        console.log("Clipboard error:", e);
-    }
-});
-
-// PRESETS
-presetButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-        const preset = btn.dataset.preset;
-        handlePreset(preset);
+    window.scrollTo({
+        top: centerY,
+        behavior: "smooth"
     });
-});
-
-function handlePreset(preset) {
-    const now = new Date();
-    let target = null;
-
-    switch (preset) {
-        case "midnight":
-            target = getNextMidnight(now);
-            break;
-        case "next-school-day":
-            target = getNextSchoolStart(now);
-            break;
-        case "end-school-day":
-            target = getEndSchoolDay(now);
-            break;
-        case "end-week":
-            target = getEndOfWeek(now);
-            break;
-        case "end-weekend":
-            target = getEndOfWeekend(now);
-            break;
-        case "christmas":
-            target = getChristmas(now);
-            break;
-        case "natural":
-            extraMessageEl.textContent = "Use the main inputs above for custom times.";
-            return;
-        default:
-            return;
-    }
-
-    targetInput.value = formatDateTimeLocal(target);
-    startMainTimer(target);
 }
 
-function getNextMidnight(now) {
-    const next = new Date(now);
-    next.setDate(next.getDate() + 1);
-    next.setHours(0, 0, 0, 0);
-    return next;
-}
+/* -----------------------------------------------------------
+   TUTORIAL START / END
+----------------------------------------------------------- */
 
-function isSchoolDay(date) {
-    const day = date.getDay();
-    return day >= 1 && day <= 5;
-}
-
-function getNextSchoolStart(now) {
-    const next = new Date(now);
-    if (isSchoolDay(next)) {
-        const start = new Date(next);
-        start.setHours(9, 0, 0, 0);
-        if (now < start) return start;
-    }
-    do {
-        next.setDate(next.getDate() + 1);
-    } while (!isSchoolDay(next));
-    next.setHours(9, 0, 0, 0);
-    return next;
-}
-
-function getEndSchoolDay(now) {
-    const endToday = new Date(now);
-    endToday.setHours(15, 20, 0, 0);
-    if (isSchoolDay(now) && now < endToday) return endToday;
-    const next = getNextSchoolStart(now);
-    const endNext = new Date(next);
-    endNext.setHours(15, 20, 0, 0);
-    return endNext;
-}
-
-function getEndOfWeek(now) {
-    const next = new Date(now);
-    const day = next.getDay();
-    const daysUntilFriday = (5 - day + 7) % 7;
-    next.setDate(next.getDate() + daysUntilFriday);
-    next.setHours(15, 20, 0, 0);
-    if (now < next) return next;
-    next.setDate(next.getDate() + 7);
-    return next;
-}
-
-function getEndOfWeekend(now) {
-    const next = new Date(now);
-    const day = next.getDay();
-    const daysUntilSunday = (0 - day + 7) % 7;
-    next.setDate(next.getDate() + daysUntilSunday);
-    next.setHours(23, 59, 59, 0);
-    if (now < next) return next;
-    next.setDate(next.getDate() + 7);
-    return next;
-}
-
-function getChristmas(now) {
-    const year = now.getFullYear();
-    let christmas = new Date(year, 11, 25, 0, 0, 0, 0);
-    if (now > christmas) {
-        christmas = new Date(year + 1, 11, 25, 0, 0, 0, 0);
-    }
-    return christmas;
-}
-
-// TWO-TIME PROGRESS
-rangeActivateBtn.addEventListener("click", () => {
-    const startVal = rangeStartInput.value;
-    const endVal = rangeEndInput.value;
-    if (!startVal || !endVal) {
-        rangeLabel.textContent = "Fill both start and end times.";
-        return;
-    }
-    const start = new Date(startVal);
-    const end = new Date(endVal);
-    if (isNaN(start.getTime()) || isNaN(end.getTime()) || end <= start) {
-        rangeLabel.textContent = "End must be after start.";
-        return;
-    }
-    rangeStart = start;
-    rangeEnd = end;
-    if (rangeInterval) {
-        clearInterval(rangeInterval);
-        rangeInterval = null;
-    }
-    updateRange();
-    rangeInterval = setInterval(updateRange, 1000);
-});
-
-function updateRange() {
-    if (!rangeStart || !rangeEnd) return;
-    const now = new Date();
-    const totalMs = rangeEnd.getTime() - rangeStart.getTime();
-    const elapsedMs = now.getTime() - rangeStart.getTime();
-    const remainingMs = rangeEnd.getTime() - now.getTime();
-
-    let percent = Math.max(0, Math.min(100, (elapsedMs / totalMs) * 100));
-    rangeBarFill.style.width = `${percent}%`;
-
-    const absElapsed = Math.max(0, elapsedMs);
-    const absRemaining = Math.max(0, remainingMs);
-
-    const elapsedText = formatDuration(absElapsed);
-    const remainingText = formatDuration(absRemaining);
-
-    let label = `Range progress: ${percent.toFixed(1)}%`;
-    let extra = "";
-
-    if (setRangePercent.checked) {
-        label = `Range progress: ${percent.toFixed(1)}%`;
-    }
-    if (setRangeElapsed.checked) {
-        extra += `Elapsed: ${elapsedText} `;
-    }
-    if (setRangeRemaining.checked) {
-        extra += `Remaining: ${remainingText}`;
-    }
-
-    rangeLabel.textContent = label;
-    rangeExtraEl.textContent = extra.trim();
-    rangeTimerEl.textContent = elapsedText;
-
-    if (now >= rangeEnd) {
-        rangeLabel.textContent = "Range complete.";
-    }
-}
-
-function formatDuration(ms) {
-    const totalSeconds = Math.floor(ms / 1000);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-    const h = hours % 24;
-    const m = minutes % 60;
-    const parts = [];
-    if (days) parts.push(`${days}d`);
-    if (h) parts.push(`${h}h`);
-    if (m) parts.push(`${m}m`);
-    parts.push(`${seconds}s`);
-    return parts.join(" ");
-}
-
-// COUNTDOWN
-cdStartBtn.addEventListener("click", () => {
-    const days = Number(cdDays.value) || 0;
-    const hours = Number(cdHours.value) || 0;
-    const minutes = Number(cdMinutes.value) || 0;
-    const seconds = Number(cdSeconds.value) || 0;
-    const totalSeconds = days * 86400 + hours * 3600 + minutes * 60 + seconds;
-    if (totalSeconds <= 0) return;
-    cdTotalMs = totalSeconds * 1000;
-    cdRemainingMs = cdTotalMs;
-    if (cdInterval) {
-        clearInterval(cdInterval);
-        cdInterval = null;
-    }
-    const toolsTitle = document.getElementById("timer-tools-title");
-    toolsTitle.classList.remove("flash-tools");
-    updateCountdown();
-    cdInterval = setInterval(updateCountdown, 1000);
-});
-
-cdPauseBtn.addEventListener("click", () => {
-    if (cdInterval) {
-        clearInterval(cdInterval);
-        cdInterval = null;
-    }
-});
-
-cdResetBtn.addEventListener("click", () => {
-    if (cdInterval) {
-        clearInterval(cdInterval);
-        cdInterval = null;
-    }
-    cdTotalMs = 0;
-    cdRemainingMs = 0;
-    cdDisplay.textContent = "--";
-    cdBarFill.style.width = "0%";
-    const toolsTitle = document.getElementById("timer-tools-title");
-    toolsTitle.classList.remove("flash-tools");
-});
-
-function updateCountdown() {
-    if (cdRemainingMs <= 0) {
-        cdRemainingMs = 0;
-        cdDisplay.textContent = "0s";
-        cdBarFill.style.width = "100%";
-        clearInterval(cdInterval);
-        cdInterval = null;
-        if (setCdFlash.checked) {
-            const toolsTitle = document.getElementById("timer-tools-title");
-            toolsTitle.classList.add("flash-tools");
-        }
-        return;
-    }
-    cdRemainingMs -= 1000;
-    const text = formatDuration(cdRemainingMs);
-    cdDisplay.textContent = text;
-    const used = cdTotalMs - cdRemainingMs;
-    const percent = Math.max(0, Math.min(100, (used / cdTotalMs) * 100));
-    cdBarFill.style.width = `${percent}%`;
-}
-
-// STOPWATCH
-swStartBtn.addEventListener("click", () => {
-    if (swRunning) return;
-    swRunning = true;
-    const startTime = Date.now() - swElapsedMs;
-    if (swInterval) {
-        clearInterval(swInterval);
-        swInterval = null;
-    }
-    swInterval = setInterval(() => {
-        swElapsedMs = Date.now() - startTime;
-        updateStopwatchDisplay();
-    }, 50);
-});
-
-swPauseBtn.addEventListener("click", () => {
-    if (!swRunning) return;
-    swRunning = false;
-    if (swInterval) {
-        clearInterval(swInterval);
-        swInterval = null;
-    }
-    addLap();
-});
-
-swResetBtn.addEventListener("click", () => {
-    swRunning = false;
-    if (swInterval) {
-        clearInterval(swInterval);
-        swInterval = null;
-    }
-    swElapsedMs = 0;
-    swDisplay.textContent = "--";
-    swBarFill.style.width = "0%";
-    swLaps.innerHTML = "";
-});
-
-swAddBtn.addEventListener("click", () => {
-    const addSeconds = Number(swAddSecondsInput.value) || 0;
-    if (addSeconds <= 0) return;
-    swElapsedMs += addSeconds * 1000;
-    updateStopwatchDisplay();
-});
-
-function updateStopwatchDisplay() {
-    const ms = swElapsedMs;
-    const totalSeconds = Math.floor(ms / 1000);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    const hours = Math.floor(minutes / 60);
-    const h = hours;
-    const m = minutes % 60;
-    const s = seconds;
-    let text = `${h}h ${m}m ${s}s`;
-    if (setSwMs.checked) {
-        const msPart = ms % 1000;
-        text += ` ${msPart}ms`;
-    }
-    swDisplay.textContent = text;
-    const percent = Math.max(0, Math.min(100, (ms % 600000) / 600000 * 100)); // loop every 10 min
-    swBarFill.style.width = `${percent}%`;
-}
-
-function addLap() {
-    if (!setSwLaps.checked) return;
-    const ms = swElapsedMs;
-    const text = formatDuration(ms);
-    const div = document.createElement("div");
-    div.textContent = `Lap: ${text}`;
-    swLaps.appendChild(div);
-}
-
-// FOCUS MODE
-focusModeBtn.addEventListener("click", () => {
-    const body = document.body;
-    if (body.classList.contains("focus-mode-active")) {
-        body.classList.remove("focus-mode-active");
-        focusModeBtn.textContent = "Focus mode";
-    } else {
-        body.classList.add("focus-mode-active");
-        focusModeBtn.textContent = "Exit focus";
-    }
-});
-
-// SETTINGS PANEL
-settingsBtn.addEventListener("click", () => {
-    settingsPanel.classList.remove("hidden");
-});
-
-closeSettingsBtn.addEventListener("click", () => {
-    settingsPanel.classList.add("hidden");
-});
-
-// SETTINGS APPLY
-function applySettings() {
-    mainBar.style.display = setMainBar.checked ? "block" : "none";
-    mainCircle.style.display = setMainCircle.checked ? "block" : "none";
-    applyCircleSize(mainCircle, setMainCircleSize.value);
-    applyBarThickness(mainBar, setMainBarThickness.value);
-    applyFontSize(bigTimerEl, setMainFontSize.value);
-    applyFontFamily(bigTimerEl, setMainFontFamily.value);
-
-    cdBar.style.display = setCdBar.checked ? "block" : "none";
-    cdCircle.style.display = setCdCircle.checked ? "block" : "none";
-    applyCircleSize(cdCircle, setCdCircleSize.value);
-    applyBarThickness(cdBar, setCdBarThickness.value);
-
-    swBar.style.display = setSwBar.checked ? "block" : "none";
-    swCircle.style.display = setSwCircle.checked ? "block" : "none";
-    applyCircleSize(swCircle, setSwCircleSize.value);
-    applyBarThickness(swBar, setSwBarThickness.value);
-
-    rangeBar.style.display = setRangeBar.checked ? "block" : "none";
-    rangeCircle.style.display = setRangeCircle.checked ? "block" : "none";
-    applyCircleSize(rangeCircle, setRangeCircleSize.value);
-    applyBarThickness(rangeBar, setRangeBarThickness.value);
-
-    const body = document.body;
-    toggleClass(body, "dark-mode", setDarkMode.checked);
-    toggleClass(body, "high-contrast", setHighContrast.checked);
-    toggleClass(body, "more-animations", setMoreAnimations.checked);
-    toggleClass(body, "hover-glow", setHoverGlow.checked);
-    toggleClass(body, "rounded", setRounded.checked);
-    toggleClass(body, "extra-spacing", setExtraSpacing.checked);
-    toggleClass(body, "compact", setCompact.checked);
-}
-
-function applyCircleSize(circleEl, size) {
-    if (!circleEl) return;
-    if (size === "small") {
-        circleEl.style.width = "160px";
-        circleEl.style.height = "160px";
-    } else if (size === "large") {
-        circleEl.style.width = "260px";
-        circleEl.style.height = "260px";
-    } else {
-        circleEl.style.width = "220px";
-        circleEl.style.height = "220px";
-    }
-}
-
-function applyBarThickness(barEl, thickness) {
-    if (!barEl) return;
-    if (thickness === "thin") {
-        barEl.style.height = "4px";
-    } else if (thickness === "thick") {
-        barEl.style.height = "10px";
-    } else {
-        barEl.style.height = "6px";
-    }
-}
-
-function applyFontSize(el, size) {
-    if (size === "small") {
-        el.style.fontSize = "2.2rem";
-    } else if (size === "large") {
-        el.style.fontSize = "3.8rem";
-    } else {
-        el.style.fontSize = "";
-    }
-}
-
-function applyFontFamily(el, family) {
-    if (family === "digital") {
-        el.style.fontFamily = "monospace";
-    } else if (family === "modern") {
-        el.style.fontFamily = "system-ui, sans-serif";
-    } else {
-        el.style.fontFamily = '"Courier New", monospace';
-    }
-}
-
-function toggleClass(el, cls, on) {
-    if (on) el.classList.add(cls);
-    else el.classList.remove(cls);
-}
-
-// SETTINGS CHANGE LISTENERS (always save)
-[
-    setMainBar, setMainCircle, setMainCircleSize, setMainBarThickness,
-    setMainFontSize, setMainFontFamily,
-    setCdBar, setCdCircle, setCdCircleSize, setCdBarThickness, setCdFlash,
-    setSwBar, setSwCircle, setSwCircleSize, setSwBarThickness, setSwMs, setSwLaps,
-    setRangeBar, setRangeCircle, setRangeCircleSize, setRangeBarThickness,
-    setRangePercent, setRangeRemaining, setRangeElapsed,
-    setTutSpotlight, setTutGlow,
-    setDarkMode, setHighContrast, setMoreAnimations, setHoverGlow,
-    setRounded, setExtraSpacing, setCompact,
-    setAutoSave, setFps
-].forEach(el => {
-    el.addEventListener("change", () => {
-        applySettings();
-        saveSettings();
-    });
-});
-
-// AUTO-SAVE SETTINGS
-function saveSettings() {
-    const data = {
-        mainBar: setMainBar.checked,
-        mainCircle: setMainCircle.checked,
-        mainCircleSize: setMainCircleSize.value,
-        mainBarThickness: setMainBarThickness.value,
-        mainFontSize: setMainFontSize.value,
-        mainFontFamily: setMainFontFamily.value,
-        cdBar: setCdBar.checked,
-        cdCircle: setCdCircle.checked,
-        cdCircleSize: setCdCircleSize.value,
-        cdBarThickness: setCdBarThickness.value,
-        cdFlash: setCdFlash.checked,
-        swBar: setSwBar.checked,
-        swCircle: setSwCircle.checked,
-        swCircleSize: setSwCircleSize.value,
-        swBarThickness: setSwBarThickness.value,
-        swMs: setSwMs.checked,
-        swLaps: setSwLaps.checked,
-        rangeBar: setRangeBar.checked,
-        rangeCircle: setRangeCircle.checked,
-        rangeCircleSize: setRangeCircleSize.value,
-        rangeBarThickness: setRangeBarThickness.value,
-        rangePercent: setRangePercent.checked,
-        rangeRemaining: setRangeRemaining.checked,
-        rangeElapsed: setRangeElapsed.checked,
-        tutSpotlight: setTutSpotlight.checked,
-        tutGlow: setTutGlow.checked,
-        darkMode: setDarkMode.checked,
-        highContrast: setHighContrast.checked,
-        moreAnimations: setMoreAnimations.checked,
-        hoverGlow: setHoverGlow.checked,
-        rounded: setRounded.checked,
-        extraSpacing: setExtraSpacing.checked,
-        compact: setCompact.checked,
-        autoSave: setAutoSave.checked,
-        fps: setFps.checked
-    };
-    localStorage.setItem("timerLabSettings", JSON.stringify(data));
-}
-
-function loadSettings() {
-    const raw = localStorage.getItem("timerLabSettings");
-    if (!raw) return;
-    try {
-        const data = JSON.parse(raw);
-        setMainBar.checked = data.mainBar ?? setMainBar.checked;
-        setMainCircle.checked = data.mainCircle ?? setMainCircle.checked;
-        setMainCircleSize.value = data.mainCircleSize ?? setMainCircleSize.value;
-        setMainBarThickness.value = data.mainBarThickness ?? setMainBarThickness.value;
-        setMainFontSize.value = data.mainFontSize ?? setMainFontSize.value;
-        setMainFontFamily.value = data.mainFontFamily ?? setMainFontFamily.value;
-
-        setCdBar.checked = data.cdBar ?? setCdBar.checked;
-        setCdCircle.checked = data.cdCircle ?? setCdCircle.checked;
-        setCdCircleSize.value = data.cdCircleSize ?? setCdCircleSize.value;
-        setCdBarThickness.value = data.cdBarThickness ?? setCdBarThickness.value;
-        setCdFlash.checked = data.cdFlash ?? setCdFlash.checked;
-
-        setSwBar.checked = data.swBar ?? setSwBar.checked;
-        setSwCircle.checked = data.swCircle ?? setSwCircle.checked;
-        setSwCircleSize.value = data.swCircleSize ?? setSwCircleSize.value;
-        setSwBarThickness.value = data.swBarThickness ?? setSwBarThickness.value;
-        setSwMs.checked = data.swMs ?? setSwMs.checked;
-        setSwLaps.checked = data.swLaps ?? setSwLaps.checked;
-
-        setRangeBar.checked = data.rangeBar ?? setRangeBar.checked;
-        setRangeCircle.checked = data.rangeCircle ?? setRangeCircle.checked;
-        setRangeCircleSize.value = data.rangeCircleSize ?? setRangeCircleSize.value;
-        setRangeBarThickness.value = data.rangeBarThickness ?? setRangeBarThickness.value;
-        setRangePercent.checked = data.rangePercent ?? setRangePercent.checked;
-        setRangeRemaining.checked = data.rangeRemaining ?? setRangeRemaining.checked;
-        setRangeElapsed.checked = data.rangeElapsed ?? setRangeElapsed.checked;
-
-        setTutSpotlight.checked = data.tutSpotlight ?? setTutSpotlight.checked;
-        setTutGlow.checked = data.tutGlow ?? setTutGlow.checked;
-
-        setDarkMode.checked = data.darkMode ?? setDarkMode.checked;
-        setHighContrast.checked = data.highContrast ?? setHighContrast.checked;
-        setMoreAnimations.checked = data.moreAnimations ?? setMoreAnimations.checked;
-        setHoverGlow.checked = data.hoverGlow ?? setHoverGlow.checked;
-        setRounded.checked = data.rounded ?? setRounded.checked;
-        setExtraSpacing.checked = data.extraSpacing ?? setExtraSpacing.checked;
-        setCompact.checked = data.compact ?? setCompact.checked;
-
-        setAutoSave.checked = data.autoSave ?? setAutoSave.checked;
-        setFps.checked = data.fps ?? setFps.checked;
-    } catch (e) {
-        console.log("Settings load error:", e);
-    }
-}
-
-// FPS COUNTER
-function updateFps() {
-    const now = performance.now();
-    fpsFrames++;
-    const diff = now - fpsLastTime;
-    if (diff >= 1000) {
-        const fps = (fpsFrames / diff) * 1000;
-        if (setFps.checked) {
-            fpsDisplay.textContent = `FPS: ${fps.toFixed(1)}`;
-        } else {
-            fpsDisplay.textContent = "FPS: --";
-        }
-        fpsFrames = 0;
-        fpsLastTime = now;
-    }
-    requestAnimationFrame(updateFps);
-}
-
-// TUTORIAL
 openTutorialBtn.addEventListener("click", () => {
     tutorialOverlay.classList.remove("hidden");
     tutorialRunning = true;
     tutorialIndex = 0;
-    showTutorialStep();
-});
 
-tutorialPrev.addEventListener("click", () => {
-    if (!tutorialRunning) return;
-    if (tutorialIndex > 0) {
-        tutorialIndex--;
-        showTutorialStep();
-    }
+    // Lock scrolling
+    document.body.style.overflow = "hidden";
+
+    showTutorialStep();
 });
 
 tutorialNext.addEventListener("click", () => {
@@ -918,57 +125,470 @@ tutorialNext.addEventListener("click", () => {
     }
 });
 
+tutorialPrev.addEventListener("click", () => {
+    if (!tutorialRunning) return;
+    if (tutorialIndex > 0) {
+        tutorialIndex--;
+        showTutorialStep();
+    }
+});
+
 tutorialFinish.addEventListener("click", () => {
     tutorialOverlay.classList.add("hidden");
     tutorialRunning = false;
+
+    // Restore scrolling
     document.body.style.overflow = "";
 });
 
-function showTutorialStep() {
-    const step = tutorialStepsData[tutorialIndex];
-    const targetEl = document.querySelector(step.selector);
-    if (!targetEl) return;
+/* Prevent scroll wheel from moving page */
+tutorialOverlay.addEventListener("wheel", (e) => {
+    if (tutorialRunning) e.preventDefault();
+}, { passive: false });
 
-    const rect = targetEl.getBoundingClientRect();
+/* -----------------------------------------------------------
+   SETTINGS PANEL TOGGLE
+----------------------------------------------------------- */
 
-    tutorialHighlight.style.left = `${rect.left}px`;
-    tutorialHighlight.style.top = `${rect.top + window.scrollY}px`;
-    tutorialHighlight.style.width = `${rect.width}px`;
-    tutorialHighlight.style.height = `${rect.height}px`;
+settingsBtn.addEventListener("click", () => {
+    settingsPanel.classList.toggle("hidden");
+});
 
-    tutorialText.textContent = step.text;
+closeSettings.addEventListener("click", () => {
+    settingsPanel.classList.add("hidden");
+});
 
-    const percent = ((tutorialIndex + 1) / tutorialStepsData.length) * 100;
-    tutorialProgressFill.style.width = `${percent}%`;
+/* -----------------------------------------------------------
+   UI MODES
+----------------------------------------------------------- */
 
-    if (setTutGlow.checked) {
-        tutorialHighlight.style.boxShadow = "0 0 16px rgba(255,255,255,0.8)";
-    } else {
-        tutorialHighlight.style.boxShadow = "none";
+setDarkMode.addEventListener("change", () => {
+    document.body.classList.toggle("dark-mode", setDarkMode.checked);
+});
+
+setHighContrast.addEventListener("change", () => {
+    document.body.classList.toggle("high-contrast", setHighContrast.checked);
+});
+
+setMoreAnimations.addEventListener("change", () => {
+    document.body.classList.toggle("more-animations", setMoreAnimations.checked);
+});
+
+setHoverGlow.addEventListener("change", () => {
+    document.body.classList.toggle("hover-glow", setHoverGlow.checked);
+});
+
+setRounded.addEventListener("change", () => {
+    document.body.classList.toggle("rounded", setRounded.checked);
+});
+
+setExtraSpacing.addEventListener("change", () => {
+    document.body.classList.toggle("extra-spacing", setExtraSpacing.checked);
+});
+
+setCompact.addEventListener("change", () => {
+    document.body.classList.toggle("compact", setCompact.checked);
+});
+
+/* -----------------------------------------------------------
+   FPS COUNTER
+----------------------------------------------------------- */
+
+function updateFPS() {
+    const now = performance.now();
+    const delta = now - lastFrameTime;
+    lastFrameTime = now;
+
+    const fps = Math.round(1000 / delta);
+
+    if (fpsEnabled) {
+        fpsDisplay.textContent = `FPS: ${fps}`;
     }
 
-    document.body.style.overflow = "";
-
+    requestAnimationFrame(updateFPS);
 }
 
-// COLLAPSIBLE PANELS
-document.querySelectorAll(".panel-title.collapsible").forEach(title => {
+setFPS.addEventListener("change", () => {
+    fpsEnabled = setFPS.checked;
+    fpsDisplay.style.display = fpsEnabled ? "block" : "none";
+});
+
+updateFPS();
+
+/* -----------------------------------------------------------
+   MAIN TIMER LOGIC (STARTS NEXT PART)
+----------------------------------------------------------- */
+/* -----------------------------------------------------------
+   MAIN TIMER LOGIC
+----------------------------------------------------------- */
+
+const targetInput = document.getElementById("target-datetime");
+const displayMode = document.getElementById("display-mode");
+const startTimerBtn = document.getElementById("start-timer");
+const todayBtn = document.getElementById("today-btn");
+
+const bigTimer = document.getElementById("big-timer");
+const directionLabel = document.getElementById("direction-label");
+const extraMessage = document.getElementById("extra-message");
+
+const mainProgressBar = document.getElementById("main-progress-bar");
+const mainProgressFill = document.getElementById("main-progress-fill");
+const mainProgressCircle = document.getElementById("main-progress-circle");
+
+let mainTimerActive = false;
+let mainTargetTime = null;
+
+todayBtn.addEventListener("click", () => {
+    const now = new Date();
+    now.setHours(23, 59, 59, 999);
+    targetInput.value = now.toISOString().slice(0, 16);
+});
+
+startTimerBtn.addEventListener("click", () => {
+    if (!targetInput.value) {
+        alert("Choose a target date/time first.");
+        return;
+    }
+
+    mainTargetTime = new Date(targetInput.value);
+    mainTimerActive = true;
+});
+
+/* -----------------------------------------------------------
+   MAIN TIMER UPDATE LOOP
+----------------------------------------------------------- */
+
+function updateMainTimer() {
+    if (!mainTimerActive || !mainTargetTime) return;
+
+    const now = new Date();
+    const diff = mainTargetTime - now;
+
+    const past = diff < 0;
+    const absDiff = Math.abs(diff);
+
+    // Direction label
+    directionLabel.textContent = past ? "Time since target:" : "Time until target:";
+
+    // Format display
+    let displayValue = "";
+
+    switch (displayMode.value) {
+        case "seconds":
+            displayValue = Math.floor(absDiff / 1000) + " sec";
+            break;
+        case "minutes":
+            displayValue = (absDiff / 60000).toFixed(2) + " min";
+            break;
+        case "hours":
+            displayValue = (absDiff / 3600000).toFixed(2) + " hr";
+            break;
+        case "days":
+            displayValue = (absDiff / 86400000).toFixed(2) + " days";
+            break;
+        case "months":
+            displayValue = (absDiff / (86400000 * 30)).toFixed(2) + " months";
+            break;
+        default:
+            displayValue = formatTime(absDiff);
+    }
+
+    bigTimer.textContent = displayValue;
+
+    // Extra message
+    extraMessage.textContent = past ? "Target time has passed." : "";
+
+    // Progress bar
+    const total = Math.abs(mainTargetTime - new Date(targetInput.value));
+    const progress = Math.min(absDiff / total, 1);
+
+    mainProgressFill.style.width = `${(1 - progress) * 100}%`;
+
+    // Progress circle
+    const circleProgress = (1 - progress);
+    mainProgressCircle.style.background = `
+        conic-gradient(#111 ${circleProgress * 360}deg, transparent 0deg)
+    `;
+}
+
+/* Format time into d/h/m/s */
+function formatTime(ms) {
+    const sec = Math.floor(ms / 1000);
+    const min = Math.floor(sec / 60);
+    const hr = Math.floor(min / 60);
+    const day = Math.floor(hr / 24);
+
+    const s = sec % 60;
+    const m = min % 60;
+    const h = hr % 24;
+
+    return `${day}d ${h}h ${m}m ${s}s`;
+}
+
+/* -----------------------------------------------------------
+   TWO-TIME RANGE MODE
+----------------------------------------------------------- */
+
+const rangeStart = document.getElementById("range-start");
+const rangeEnd = document.getElementById("range-end");
+const rangeActivate = document.getElementById("range-activate");
+
+const rangeLabel = document.getElementById("range-label");
+const rangeTimer = document.getElementById("range-timer");
+const rangeExtra = document.getElementById("range-extra");
+
+const rangeProgressFill = document.getElementById("range-progress-fill");
+const rangeProgressCircle = document.getElementById("range-progress-circle");
+
+let rangeActive = false;
+let rangeStartTime = null;
+let rangeEndTime = null;
+
+rangeActivate.addEventListener("click", () => {
+    if (!rangeStart.value || !rangeEnd.value) {
+        alert("Choose both start and end times.");
+        return;
+    }
+
+    rangeStartTime = new Date(rangeStart.value);
+    rangeEndTime = new Date(rangeEnd.value);
+
+    if (rangeEndTime <= rangeStartTime) {
+        alert("End time must be after start time.");
+        return;
+    }
+
+    rangeActive = true;
+    rangeLabel.textContent = "Range active:";
+});
+
+/* -----------------------------------------------------------
+   RANGE UPDATE LOOP
+----------------------------------------------------------- */
+
+function updateRangeTimer() {
+    if (!rangeActive) return;
+
+    const now = new Date();
+
+    const total = rangeEndTime - rangeStartTime;
+    const elapsed = now - rangeStartTime;
+    const remaining = rangeEndTime - now;
+
+    const progress = Math.min(Math.max(elapsed / total, 0), 1);
+
+    rangeTimer.textContent = `${(progress * 100).toFixed(2)}%`;
+
+    rangeExtra.textContent =
+        `Elapsed: ${formatTime(elapsed)} | Remaining: ${formatTime(remaining)}`;
+
+    rangeProgressFill.style.width = `${progress * 100}%`;
+
+    rangeProgressCircle.style.background = `
+        conic-gradient(#111 ${progress * 360}deg, transparent 0deg)
+    `;
+}
+
+/* -----------------------------------------------------------
+   COUNTDOWN TIMER
+----------------------------------------------------------- */
+
+const cdDays = document.getElementById("cd-days");
+const cdHours = document.getElementById("cd-hours");
+const cdMinutes = document.getElementById("cd-minutes");
+const cdSeconds = document.getElementById("cd-seconds");
+
+const cdStart = document.getElementById("cd-start");
+const cdPause = document.getElementById("cd-pause");
+const cdReset = document.getElementById("cd-reset");
+
+const cdDisplay = document.getElementById("cd-display");
+const cdProgressFill = document.getElementById("cd-progress-fill");
+const cdProgressCircle = document.getElementById("cd-progress-circle");
+
+let cdTotal = 0;
+let cdRemaining = 0;
+let cdRunning = false;
+let cdInterval = null;
+
+cdStart.addEventListener("click", () => {
+    cdTotal =
+        cdDays.value * 86400 +
+        cdHours.value * 3600 +
+        cdMinutes.value * 60 +
+        Number(cdSeconds.value);
+
+    if (cdTotal <= 0) {
+        alert("Enter a valid countdown time.");
+        return;
+    }
+
+    cdRemaining = cdTotal;
+    cdRunning = true;
+
+    clearInterval(cdInterval);
+    cdInterval = setInterval(updateCountdown, 1000);
+});
+
+cdPause.addEventListener("click", () => {
+    cdRunning = false;
+});
+
+cdReset.addEventListener("click", () => {
+    cdRunning = false;
+    cdRemaining = 0;
+    cdDisplay.textContent = "--";
+    cdProgressFill.style.width = "0%";
+    cdProgressCircle.style.background = "none";
+});
+
+function updateCountdown() {
+    if (!cdRunning) return;
+
+    cdRemaining--;
+
+    if (cdRemaining <= 0) {
+        cdRunning = false;
+        cdDisplay.textContent = "Finished!";
+        cdProgressFill.style.width = "100%";
+
+        document.getElementById("timer-tools-title").classList.add("flash-tools");
+        setTimeout(() => {
+            document.getElementById("timer-tools-title").classList.remove("flash-tools");
+        }, 3000);
+
+        return;
+    }
+
+    cdDisplay.textContent = formatTime(cdRemaining * 1000);
+
+    const progress = 1 - cdRemaining / cdTotal;
+    cdProgressFill.style.width = `${progress * 100}%`;
+
+    cdProgressCircle.style.background = `
+        conic-gradient(#111 ${progress * 360}deg, transparent 0deg)
+    `;
+}
+
+/* -----------------------------------------------------------
+   STOPWATCH (CONTINUES NEXT PART)
+----------------------------------------------------------- */
+/* -----------------------------------------------------------
+   STOPWATCH
+----------------------------------------------------------- */
+
+const swStart = document.getElementById("sw-start");
+const swPause = document.getElementById("sw-pause");
+const swReset = document.getElementById("sw-reset");
+
+const swAddSeconds = document.getElementById("sw-add-seconds");
+const swAddBtn = document.getElementById("sw-add-btn");
+
+const swDisplay = document.getElementById("sw-display");
+const swProgressFill = document.getElementById("sw-progress-fill");
+const swProgressCircle = document.getElementById("sw-progress-circle");
+const swLaps = document.getElementById("sw-laps");
+
+let swTime = 0;
+let swRunning = false;
+let swInterval = null;
+
+swStart.addEventListener("click", () => {
+    if (!swRunning) {
+        swRunning = true;
+        swInterval = setInterval(updateStopwatch, 100);
+    }
+});
+
+swPause.addEventListener("click", () => {
+    swRunning = false;
+});
+
+swReset.addEventListener("click", () => {
+    swRunning = false;
+    swTime = 0;
+    swDisplay.textContent = "--";
+    swProgressFill.style.width = "0%";
+    swProgressCircle.style.background = "none";
+    swLaps.innerHTML = "";
+});
+
+swAddBtn.addEventListener("click", () => {
+    const add = Number(swAddSeconds.value);
+    if (add > 0) {
+        swTime += add * 1000;
+    }
+});
+
+function updateStopwatch() {
+    if (!swRunning) return;
+
+    swTime += 100;
+
+    const ms = swTime;
+    const sec = Math.floor(ms / 1000);
+    const min = Math.floor(sec / 60);
+    const hr = Math.floor(min / 60);
+
+    const s = sec % 60;
+    const m = min % 60;
+    const h = hr;
+
+    if (document.getElementById("set-sw-ms").checked) {
+        swDisplay.textContent = `${h}h ${m}m ${s}s ${ms % 1000}ms`;
+    } else {
+        swDisplay.textContent = `${h}h ${m}m ${s}s`;
+    }
+
+    const progress = (ms % 60000) / 60000;
+    swProgressFill.style.width = `${progress * 100}%`;
+
+    swProgressCircle.style.background = `
+        conic-gradient(#111 ${progress * 360}deg, transparent 0deg)
+    `;
+}
+
+/* -----------------------------------------------------------
+   LAPS
+----------------------------------------------------------- */
+
+swDisplay.addEventListener("click", () => {
+    if (!document.getElementById("set-sw-laps").checked) return;
+
+    const ms = swTime;
+    const sec = Math.floor(ms / 1000);
+    const min = Math.floor(sec / 60);
+    const hr = Math.floor(min / 60);
+
+    const s = sec % 60;
+    const m = min % 60;
+    const h = hr;
+
+    const lap = document.createElement("div");
+    lap.textContent = `Lap: ${h}h ${m}m ${s}s`;
+    swLaps.appendChild(lap);
+});
+
+/* -----------------------------------------------------------
+   COLLAPSIBLE PANELS
+----------------------------------------------------------- */
+
+document.querySelectorAll(".collapsible").forEach(title => {
     title.addEventListener("click", () => {
-        const targetId = title.dataset.target;
-        const body = document.getElementById(targetId);
-        if (!body) return;
-        const isHidden = body.style.display === "none";
-        body.style.display = isHidden ? "block" : "none";
+        title.classList.toggle("collapsed");
+        const target = document.getElementById(title.dataset.target);
+        if (target) target.style.display = title.classList.contains("collapsed") ? "none" : "block";
     });
 });
 
-// INIT
-window.addEventListener("load", () => {
-    loadSettings();
-    applySettings();
-    document.querySelectorAll(".panel-title.collapsible").forEach(title => {
-        const body = document.getElementById(title.dataset.target);
-        if (body) body.style.display = "block";
-    });
-    requestAnimationFrame(updateFps);
-});
+/* -----------------------------------------------------------
+   MAIN UPDATE LOOP
+----------------------------------------------------------- */
+
+function updateAll() {
+    updateMainTimer();
+    updateRangeTimer();
+    requestAnimationFrame(updateAll);
+}
+
+updateAll();

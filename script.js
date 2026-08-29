@@ -158,6 +158,13 @@ closeSettings.addEventListener("click", () => {
     settingsPanel.classList.add("hidden");
 });
 
+document.querySelectorAll(".preset-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const preset = btn.dataset.preset;
+        applyPreset(preset);
+    });
+});
+
 /* -----------------------------------------------------------
    UI MODES
 ----------------------------------------------------------- */

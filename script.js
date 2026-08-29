@@ -37,9 +37,7 @@ const tutorialProgressBar = document.getElementById("tutorial-progress-bar");
 
 const openTutorialBtn = document.getElementById("open-tutorial");
 
-const sectionInput = document.getElementById("section-input");
 const sectionDisplay = document.getElementById("section-display");
-const sectionPresets = document.getElementById("section-presets");
 
 // --------------------------------------------------
 // STATE
@@ -174,7 +172,6 @@ function updateTimer(targetDate) {
             displayText = `${approxMonths.toLocaleString()} months (approx)`;
             compactText = `${approxMonths}mo`;
             break;
-        case "normal":
         default:
             displayText = buildNormalText(years, remainingDaysAfterYears, hours, minutes, seconds);
             compactText = buildCompactText(totalDays, hours, minutes, seconds);
@@ -183,13 +180,6 @@ function updateTimer(targetDate) {
 
     bigTimerEl.textContent = displayText;
     lastCompactText = compactText;
-    triggerTimerFade();
-
-    if (isFuture) {
-        extraMessageEl.textContent = "";
-    } else {
-        extraMessageEl.textContent = "That time has already passed – now showing how long it’s been.";
-    }
 
     updateProgress(absDiffMs, isFuture);
 }
@@ -551,7 +541,7 @@ function updateTutorialProgress() {
 }
 
 // --------------------------------------------------
-// AUTO-SHOW TUTORIAL ON FIRST LOAD (ONE-TIME FEEL)
+// AUTO-SHOW TUTORIAL ON FIRST LOAD
 // --------------------------------------------------
 
 window.addEventListener("load", () => {

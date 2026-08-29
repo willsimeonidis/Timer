@@ -949,10 +949,6 @@ function showTutorialStep() {
 
     document.body.style.overflow = "";
 
-    window.scrollTo({
-        top: rect.top + window.scrollY - 80,
-        behavior: "smooth"
-    });
 }
 
 // COLLAPSIBLE PANELS

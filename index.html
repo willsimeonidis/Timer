@@ -1,1 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Timer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="masthead">
+            <h1 class="site-title">TIMER</h1>
+            <p class="site-tagline">Clean time calculator · Count up & count down · 8H-News style</p>
+        </div>
+    </header>
 
+    <main class="layout">
+        <section class="panel panel-top">
+            <div class="panel-header">
+                <h2 class="panel-title">Quick presets</h2>
+            </div>
+            <div class="preset-row">
+                <div class="preset-group">
+                    <label for="preset-type" class="label">Event</label>
+                    <select id="preset-type" class="select">
+                        <option value="">Choose an event…</option>
+                        <option value="christmas">Christmas</option>
+                        <option value="newyear">New Year</option>
+                        <option value="schoolend">School Ends</option>
+                        <option value="custom">Custom important day</option>
+                    </select>
+                </div>
+                <div class="preset-group">
+                    <label for="preset-year" class="label">Year</label>
+                    <select id="preset-year" class="select">
+                        <!-- Filled by JS -->
+                    </select>
+                </div>
+                <button id="apply-preset" class="btn">Set preset</button>
+            </div>
+        </section>
+
+        <section class="panel panel-middle">
+            <div class="panel-header">
+                <h2 class="panel-title">Choose any date & time</h2>
+            </div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="target-datetime" class="label">Target date & time</label>
+                    <input type="datetime-local" id="target-datetime" class="input">
+                </div>
+                <div class="input-group">
+                    <label for="display-mode" class="label">Display as</label>
+                    <select id="display-mode" class="select">
+                        <option value="normal">Normal (1 year 57 days 4 hours…)</option>
+                        <option value="seconds">How many seconds</option>
+                        <option value="minutes">How many minutes</option>
+                        <option value="hours">How many hours</option>
+                        <option value="days">How many days</option>
+                        <option value="months">How many months (approx)</option>
+                    </select>
+                </div>
+                <button id="start-timer" class="btn btn-primary">Show time</button>
+            </div>
+        </section>
+
+        <section class="panel panel-display">
+            <div class="panel-header">
+                <h2 class="panel-title">Time between now and your date</h2>
+            </div>
+            <div class="display-wrapper">
+                <p id="direction-label" class="direction-label">Waiting for a date…</p>
+                <div id="big-timer" class="big-timer">--</div>
+                <p id="extra-message" class="extra-message"></p>
+            </div>
+        </section>
+    </main>
+
+    <div id="confetti-container" class="confetti-container"></div>
+
+    <footer class="site-footer">
+        <p class="footer-text">Timer · Built in the spirit of 8H-News · Light, clean, phone-friendly.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

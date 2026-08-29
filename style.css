@@ -9,8 +9,7 @@ body {
     color: #222;
 }
 
-/* Header */
-
+/* HEADER */
 .site-header {
     border-bottom: 2px solid #111;
     background: #faf7f0;
@@ -36,16 +35,14 @@ body {
     color: #555;
 }
 
-/* Layout */
-
+/* LAYOUT */
 .layout {
     max-width: 960px;
     margin: 16px auto 32px;
     padding: 0 12px;
 }
 
-/* Panels */
-
+/* PANELS */
 .panel {
     background: #fffdf7;
     border: 1px solid #d4cbb8;
@@ -70,8 +67,7 @@ body {
     letter-spacing: 0.12em;
 }
 
-/* Form elements */
-
+/* INPUTS */
 .label {
     display: block;
     font-size: 0.8rem;
@@ -100,8 +96,7 @@ body {
     box-shadow: 0 0 0 1px #111;
 }
 
-/* Buttons */
-
+/* BUTTONS */
 .btn {
     padding: 8px 14px;
     border: 1px solid #111;
@@ -121,28 +116,17 @@ body {
     box-shadow: 0 2px 4px rgba(0,0,0,0.08);
 }
 
-.btn:active {
-    transform: translateY(0);
-    box-shadow: none;
-}
-
 .btn-primary {
     background: #111;
     color: #fdfaf3;
 }
 
-.btn-primary:hover {
-    background: #333;
-}
-
 .btn-small {
     font-size: 0.75rem;
     padding: 6px 10px;
-    letter-spacing: 0.14em;
 }
 
-/* Rows */
-
+/* INPUT ROW */
 .input-row {
     display: flex;
     flex-wrap: wrap;
@@ -154,8 +138,7 @@ body {
     flex: 1 1 220px;
 }
 
-/* Display */
-
+/* DISPLAY */
 .display-wrapper {
     text-align: center;
     padding: 12px 8px 20px;
@@ -191,16 +174,7 @@ body {
     color: #000;
 }
 
-/* Extra message */
-
-.extra-message {
-    margin: 6px 0 0;
-    font-size: 0.9rem;
-    color: #666;
-}
-
-/* Footer */
-
+/* FOOTER */
 .site-footer {
     border-top: 1px solid #d4cbb8;
     padding: 10px 16px 16px;
@@ -215,13 +189,11 @@ body {
     color: #666;
 }
 
-/* Tutorial overlay */
-
+/* TUTORIAL OVERLAY */
 .tutorial-overlay {
     position: fixed;
     inset: 0;
     z-index: 999;
-    pointer-events: auto;
 }
 
 .hidden {
@@ -234,8 +206,7 @@ body {
     background: rgba(0, 0, 0, 0.75);
 }
 
-/* Welcome */
-
+/* WELCOME SCREEN */
 .tutorial-center {
     position: absolute;
     inset: 0;
@@ -258,6 +229,14 @@ body {
     font-size: 0.95rem;
     color: #fdfaf3;
     margin-bottom: 24px;
+    text-decoration: underline;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: transform 0.12s ease;
+}
+
+.tutorial-subtext:active {
+    transform: scale(0.96);
 }
 
 .tutorial-skip {
@@ -267,8 +246,7 @@ body {
     pointer-events: auto;
 }
 
-/* Steps */
-
+/* TUTORIAL STEPS */
 .tutorial-steps {
     position: absolute;
     inset: 0;
@@ -322,8 +300,7 @@ body {
     gap: 6px;
 }
 
-/* Mobile */
-
+/* MOBILE */
 @media (max-width: 640px) {
     .site-title {
         font-size: 1.8rem;

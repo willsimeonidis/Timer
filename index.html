@@ -7,81 +7,96 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header class="site-header">
-        <div class="masthead">
-            <h1 class="site-title">TIMER</h1>
-            <p class="site-tagline">Clean time calculator · Count up & count down · 8H-News style</p>
-        </div>
-    </header>
 
-    <main class="layout">
-        <section class="panel panel-middle" id="section-input">
-            <div class="panel-header">
-                <h2 class="panel-title">Choose any date & time</h2>
-                <button id="open-tutorial" class="btn btn-small">Show tutorial</button>
-            </div>
-            <div class="input-row">
-                <div class="input-group">
-                    <label for="target-datetime" class="label">Target date & time</label>
-                    <input type="datetime-local" id="target-datetime" class="input">
-                </div>
-                <div class="input-group">
-                    <label for="display-mode" class="label">Display as</label>
-                    <select id="display-mode" class="select">
-                        <option value="normal">Normal</option>
-                        <option value="seconds">Seconds</option>
-                        <option value="minutes">Minutes</option>
-                        <option value="hours">Hours</option>
-                        <option value="days">Days</option>
-                        <option value="months">Months (approx)</option>
-                    </select>
-                </div>
-                <button id="start-timer" class="btn btn-primary">Show time</button>
-            </div>
-        </section>
+<header class="site-header">
+    <div class="masthead">
+        <h1 class="site-title">TIMER</h1>
+        <p class="site-tagline">Clean time calculator · Count up & count down · 8H-News style</p>
+    </div>
+</header>
 
-        <section class="panel panel-display" id="section-display">
-            <div class="panel-header">
-                <h2 class="panel-title">Time between now and your date</h2>
-            </div>
-            <div class="display-wrapper">
-                <p id="direction-label" class="direction-label">Waiting for a date…</p>
-                <div class="timer-row">
-                    <button id="copy-timer" class="btn btn-copy">Copy</button>
-                    <div id="big-timer" class="big-timer">--</div>
-                </div>
-                <p id="extra-message" class="extra-message"></p>
-            </div>
-        </section>
-    </main>
+<main class="layout">
 
-    <footer class="site-footer">
-        <p class="footer-text">Timer · Built in the spirit of 8H-News · Light, clean, phone-friendly.</p>
-    </footer>
-
-    <!-- Tutorial overlay -->
-    <div id="tutorial-overlay" class="tutorial-overlay hidden">
-        <div class="tutorial-backdrop"></div>
-
-        <div id="tutorial-welcome" class="tutorial-center">
-            <div class="tutorial-welcome-text">Welcome</div>
-            <div class="tutorial-subtext">Tap any button to proceed</div>
-            <button id="tutorial-skip" class="btn btn-small tutorial-skip">Skip tutorial</button>
+    <!-- INPUT SECTION -->
+    <section class="panel panel-middle" id="section-input">
+        <div class="panel-header">
+            <h2 class="panel-title">Choose any date & time</h2>
+            <button id="open-tutorial" class="btn btn-small">Show tutorial</button>
         </div>
 
-        <div id="tutorial-steps" class="tutorial-steps hidden">
-            <div id="tutorial-highlight" class="tutorial-highlight"></div>
-            <div class="tutorial-info">
-                <div id="tutorial-text" class="tutorial-text"></div>
-                <div class="tutorial-controls">
-                    <button id="tutorial-prev" class="btn btn-small">Previous</button>
-                    <button id="tutorial-next" class="btn btn-small">Next</button>
-                    <button id="tutorial-finish" class="btn btn-small btn-primary">Finish tutorial</button>
-                </div>
+        <div class="input-row">
+            <div class="input-group">
+                <label for="target-datetime" class="label">Target date & time</label>
+                <input type="datetime-local" id="target-datetime" class="input">
+            </div>
+
+            <div class="input-group">
+                <label for="display-mode" class="label">Display as</label>
+                <select id="display-mode" class="select">
+                    <option value="normal">Normal</option>
+                    <option value="seconds">Seconds</option>
+                    <option value="minutes">Minutes</option>
+                    <option value="hours">Hours</option>
+                    <option value="days">Days</option>
+                    <option value="months">Months (approx)</option>
+                </select>
+            </div>
+
+            <button id="start-timer" class="btn btn-primary">Show time</button>
+        </div>
+    </section>
+
+    <!-- DISPLAY SECTION -->
+    <section class="panel panel-display" id="section-display">
+        <div class="panel-header">
+            <h2 class="panel-title">Time between now and your date</h2>
+        </div>
+
+        <div class="display-wrapper">
+            <p id="direction-label" class="direction-label">Waiting for a date…</p>
+
+            <div class="timer-row">
+                <button id="copy-timer" class="btn btn-copy">Copy</button>
+                <div id="big-timer" class="big-timer">--</div>
+            </div>
+
+            <p id="extra-message" class="extra-message"></p>
+        </div>
+    </section>
+
+</main>
+
+<footer class="site-footer">
+    <p class="footer-text">Timer · Built in the spirit of 8H-News · Light, clean, phone-friendly.</p>
+</footer>
+
+<!-- TUTORIAL OVERLAY -->
+<div id="tutorial-overlay" class="tutorial-overlay hidden">
+    <div class="tutorial-backdrop"></div>
+
+    <!-- WELCOME SCREEN -->
+    <div id="tutorial-welcome" class="tutorial-center">
+        <div class="tutorial-welcome-text">Welcome</div>
+        <div id="tutorial-proceed" class="tutorial-subtext">Tap here to proceed</div>
+        <button id="tutorial-skip" class="btn btn-small tutorial-skip">Skip tutorial</button>
+    </div>
+
+    <!-- STEP-BY-STEP -->
+    <div id="tutorial-steps" class="tutorial-steps hidden">
+        <div id="tutorial-highlight" class="tutorial-highlight"></div>
+
+        <div class="tutorial-info">
+            <div id="tutorial-text" class="tutorial-text"></div>
+
+            <div class="tutorial-controls">
+                <button id="tutorial-prev" class="btn btn-small">Previous</button>
+                <button id="tutorial-next" class="btn btn-small">Next</button>
+                <button id="tutorial-finish" class="btn btn-small btn-primary">Finish tutorial</button>
             </div>
         </div>
     </div>
+</div>
 
-    <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-// Core elements
+// Elements
 let timerInterval = null;
 
 const targetInput = document.getElementById("target-datetime");
@@ -19,13 +19,14 @@ const tutorialText = document.getElementById("tutorial-text");
 const tutorialPrev = document.getElementById("tutorial-prev");
 const tutorialNext = document.getElementById("tutorial-next");
 const tutorialFinish = document.getElementById("tutorial-finish");
+const tutorialProceed = document.getElementById("tutorial-proceed");
 
 const sectionInput = document.getElementById("section-input");
 const sectionDisplay = document.getElementById("section-display");
 
 let lastCompactText = "--";
 
-// Tutorial state
+// Tutorial steps
 const tutorialStepsData = [
     {
         selector: "#section-input",
@@ -155,141 +156,4 @@ function updateTimer(targetDate) {
 }
 
 // Normal text
-function buildNormalText(years, days, hours, minutes, seconds) {
-    const parts = [];
-
-    if (years) parts.push(`${years} year${years !== 1 ? "s" : ""}`);
-    if (days) parts.push(`${days} day${days !== 1 ? "s" : ""}`);
-    if (hours) parts.push(`${hours} hour${hours !== 1 ? "s" : ""}`);
-    if (minutes) parts.push(`${minutes} minute${minutes !== 1 ? "s" : ""}`);
-    if (seconds || parts.length === 0) {
-        parts.push(`${seconds} second${seconds !== 1 ? "s" : ""}`);
-    }
-
-    return parts.join(" ");
-}
-
-// Compact text like 161d 11h 7m 50s
-function buildCompactText(days, hours, minutes, seconds) {
-    const parts = [];
-    if (days) parts.push(`${days}d`);
-    if (hours) parts.push(`${hours}h`);
-    if (minutes) parts.push(`${minutes}m`);
-    parts.push(`${seconds}s`);
-    return parts.join(" ");
-}
-
-// Copy button
-copyBtn.addEventListener("click", () => {
-    if (!lastCompactText || lastCompactText === "--") return;
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(lastCompactText).catch(() => {});
-    }
-});
-
-// Tutorial logic
-
-function showTutorialOverlay() {
-    tutorialOverlay.classList.remove("hidden");
-    tutorialWelcome.classList.remove("hidden");
-    tutorialSteps.classList.add("hidden");
-    tutorialIntroActive = true;
-    tutorialRunning = false;
-}
-
-function hideTutorialOverlay() {
-    tutorialOverlay.classList.add("hidden");
-    tutorialIntroActive = false;
-    tutorialRunning = false;
-}
-
-function startTutorialSteps() {
-    tutorialIntroActive = false;
-    tutorialRunning = true;
-    tutorialWelcome.classList.add("hidden");
-    tutorialSteps.classList.remove("hidden");
-    tutorialIndex = 0;
-    showTutorialStep(tutorialIndex);
-}
-
-function showTutorialStep(index) {
-    const step = tutorialStepsData[index];
-    if (!step) return;
-
-    const targetEl = document.querySelector(step.selector);
-    if (!targetEl) return;
-
-    const rect = targetEl.getBoundingClientRect();
-
-    tutorialHighlight.style.left = `${rect.left - 6}px`;
-    tutorialHighlight.style.top = `${rect.top - 6}px`;
-    tutorialHighlight.style.width = `${rect.width + 12}px`;
-    tutorialHighlight.style.height = `${rect.height + 12}px`;
-
-    tutorialText.classList.remove("slide-in");
-    void tutorialText.offsetWidth;
-    tutorialText.textContent = step.text;
-    tutorialText.classList.add("slide-in");
-}
-
-// Tutorial controls
-tutorialSkip.addEventListener("click", () => {
-    hideTutorialOverlay();
-    markTutorialDone();
-});
-
-tutorialPrev.addEventListener("click", () => {
-    if (!tutorialRunning) return;
-    if (tutorialIndex > 0) {
-        tutorialIndex--;
-        showTutorialStep(tutorialIndex);
-    }
-});
-
-tutorialNext.addEventListener("click", () => {
-    if (!tutorialRunning) return;
-    if (tutorialIndex < tutorialStepsData.length - 1) {
-        tutorialIndex++;
-        showTutorialStep(tutorialIndex);
-    }
-});
-
-tutorialFinish.addEventListener("click", () => {
-    hideTutorialOverlay();
-    markTutorialDone();
-});
-
-// Any button to proceed from welcome
-tutorialWelcome.addEventListener("click", (e) => {
-    const btn = e.target.closest("button");
-    if (!btn) return;
-    startTutorialSteps();
-});
-
-// Open tutorial manually
-openTutorialBtn.addEventListener("click", () => {
-    showTutorialOverlay();
-});
-
-// Tutorial persistence
-function markTutorialDone() {
-    try {
-        localStorage.setItem("timerTutorialDone", "true");
-    } catch (e) {}
-}
-
-function shouldShowTutorialOnLoad() {
-    try {
-        const done = localStorage.getItem("timerTutorialDone");
-        return !done;
-    } catch (e) {
-        return true;
-    }
-}
-
-// Init
-window.addEventListener("load", () => {
-    if (shouldShowTutorialOnLoad()) {
-        showTutorialOverlay();
-    }
-});
+function buildNormalText(years, days, hours, minutes, seconds)
